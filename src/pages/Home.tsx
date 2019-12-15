@@ -13,9 +13,8 @@ import {
   Icon
 } from "semantic-ui-react";
 import "../stylesheets/AppStyle.css";
-        
+
 export const Home: React.FC = () => {
-  
   const [active, setActive] = useState();
   const [loggedIn, setLoggedIN] = useState();
   const [loaded, setLoaded] = useState<boolean>(false);
@@ -31,6 +30,7 @@ export const Home: React.FC = () => {
     setLoggedIN(false);
     setLoaded(true);
   };
+
   useEffect(() => {
     fetchUserData();
   }, []);
@@ -43,7 +43,7 @@ export const Home: React.FC = () => {
   }
 
   if (!loggedIn && loaded) return <Redirect to="/" />;
-  
+
   return (
     <div className="AppStyle">
       <Menubar />

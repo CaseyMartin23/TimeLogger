@@ -23,13 +23,15 @@ export const Login: React.FC = () => {
 
   const isUserLoggedIn = async () => {
     setLoading(true);
-    fetch("/whoami")
-      .then(res => res.json())
-      .then(jsonRes => {
-        if (!jsonRes.LinkedinId) setIsLoggedIn(false);
-        if (jsonRes) setIsLoggedIn(true);
-      });
-    setLoading(false);
+    console.log("Loading is ==> ", loading);
+    const res = await fetch("/whoami");
+    if (res.status === 200 || res.status === 302) {
+      const json = await res.json();
+      if (!json.LinkedinId) setIsLoggedIn(false);
+      return setIsLoggedIn(true);
+    }
+    console.log("Im done loading ...");
+    return setLoading(false);
   };
 
   const postUserRole = () => {
@@ -37,7 +39,7 @@ export const Login: React.FC = () => {
     console.log("This is the userRole ==> ", userRole);
   };
 
-  useEffect(isUserLoggedIn, []);
+  useEffect(() => isUserLoggedIn());
 
   useEffect(postUserRole, [userRole]);
 
@@ -46,7 +48,7 @@ export const Login: React.FC = () => {
     return <div>Loading ...</div>;
   }
 
-  if (isLoggedIn) return <Redirect to="/Home" />;
+  if (isLoggedIn) return <Redirect to="/home" />;
 
   return (
     <Grid centered={true} style={{ height: "100vh" }} verticalAlign="middle">

@@ -83,7 +83,7 @@ app.get(
   "/auth/linkedin/redirect",
   passport.authenticate("linkedin"),
   (req, res) => {
-    res.redirect("http://localhost:3000/Home");
+    res.redirect("http://localhost:3000/home");
   }
 );
 
