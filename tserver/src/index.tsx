@@ -1,5 +1,5 @@
 import express from "express";
-import { PORT } from "./src/config/constants";
+import { PORT } from "./config/constants";
 
 const path = require("path");
 const app = express();
@@ -17,7 +17,7 @@ passport.use(
       consumerSecret: "EPDAbpMZaLiqdKTP",
       callbackUrl: "/auth/linkedin/callback"
     },
-    (accessToken, refreshToken, profile, cb) => {
+    (accessToken: string, refreshToken: string, profile: {}, cb: any) => {
       console.log(chalk.blue(JSON.stringify(profile)));
       user = { ...profile };
       return cb(null, profile);
@@ -30,7 +30,7 @@ app.use(passport.initialize());
 app.get("/auth/linkedin", passport.authenticate("linkedin"));
 app.get(
   "/auth/linkedin/callback",
-  passport.authenticate("linkedin", (req, res) => {
+  passport.authenticate("linkedin", (req: any, res: any) => {
     res.redirect("/profile");
   })
 );
@@ -38,18 +38,18 @@ app.get(
 //!----------------Default---------------------!
 app.use(express.static(path.join(__dirname, "build")));
 
-app.get("/user", function(req, res) {
+app.get("/user", function(req: any, res: any) {
   console.log("getting user data!");
   return res.send(user);
 });
 
-app.get("/auth/logout", function(req, res) {
+app.get("/auth/logout", function(req: any, res: any) {
   console.log("logging out!");
   user = {};
   return res.redirect("/");
 });
 
-app.get("/", function(req, res) {
+app.get("/", function(req: any, res: any) {
   res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
