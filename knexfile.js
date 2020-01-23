@@ -2,7 +2,7 @@ const host = "localhost",
   username = "postgres",
   password = "admin",
   port = "5432",
-  db = "todos_test";
+  db = "timelogger_db";
 
 module.exports = {
   development: {
