@@ -9,12 +9,16 @@ exports.seed = function(knex) {
           Id: "1",
           Username: "John",
           Password: "asougfh",
+          Firstname: "oausfbh",
+          Lastname: "daslifgh",
           Email: "john@gmail.com"
         },
         {
           Id: "2",
           Username: "Jennefer",
           Password: "akjsfn",
+          Firstname: "asdofuhfwqa",
+          Lastname: "sdgkuh",
           Email: "jennefer@gmail.com"
         }
       ]);

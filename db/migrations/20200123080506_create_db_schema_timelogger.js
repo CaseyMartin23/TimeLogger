@@ -3,6 +3,8 @@ exports.up = function(knex) {
     table.string("Id").notNullable();
     table.string("Username").notNullable();
     table.string("Password").notNullable();
+    table.string("Firstname").notNullable();
+    table.string("Lastname").notNullable();
     table.string("Email").notNullable();
     table.timestamp("created_at").defaultTo(knex.fn.now());
     table.timestamp("updated_at").defaultTo(knex.fn.now());

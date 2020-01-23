@@ -6,7 +6,7 @@ const session = require("express-session");
 const LinkedinStrategy = require("passport-linkedin-oauth2").Strategy;
 const keys = require("./Keys/keys");
 const PORT = process.env.PORT || 3005;
-var knex = require("../db/knex");
+const knex = require("../db/knex");
 
 // <============= Default Express =============>
 console.log("Server has started ....");
@@ -15,15 +15,6 @@ app.get("/", function(req, res) {
 });
 
 // <============= Database Operations ============>
-app.get("/todos", (req, res) => {
-  console.log("getting todos");
-  knex
-    .select()
-    .from("todos")
-    .then(todos => {
-      res.send(todos);
-    });
-});
 
 app.get("/users", (req, res) => {
   console.log("getting users");
@@ -46,6 +37,17 @@ passport.use(
     (accessToken, refreshToken, profile, done) => {
       console.log("passport callback has fired ...");
       console.log("This is the porfile data => ", profile);
+      return knex("users").then(() => {
+        // Inserts seed entriess
+        return knex("users").insert({
+          Id: profile.id,
+          Username: profile.displayName,
+          Firstname: profile.name.givenName,
+          Lastname: profile.name.familyName,
+          Password: "password",
+          Email: "email@email.com"
+        });
+      });
     }
   )
 );
