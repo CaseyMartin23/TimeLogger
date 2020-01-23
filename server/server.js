@@ -35,17 +35,18 @@ app.get("/users", (req, res) => {
     });
 });
 
-app.get("/something/else", (req, res) => res.send("This is another app ..."));
-
 // <============= Linkedin Strategy =============>
 passport.use(
   new LinkedinStrategy(
     {
       clientID: keys.Linkedin.clientID,
       clientSecret: keys.Linkedin.clientSecret,
-      callbackURL: "https://localhost:3000/auth/linkedin/callback"
+      callbackURL: "http://localhost:3005/auth/linkedin/redirect"
     },
-    (accessToken, refreshToken, profile, done) => {}
+    (accessToken, refreshToken, profile, done) => {
+      console.log("passport callback has fired ...");
+      console.log("This is the porfile data => ", profile);
+    }
   )
 );
 
@@ -58,8 +59,16 @@ app.get("/auth/logout", (req, res) => {
 app.get(
   "/auth/linkedin",
   passport.authenticate("linkedin", {
-    scope: ["profile"]
+    scope: ["r_emailaddress", "r_liteprofile", "w_member_social"]
   })
+);
+
+app.get(
+  "/auth/linkedin/redirect",
+  passport.authenticate("linkedin"),
+  (req, res) => {
+    res.send("You've reached the redirect URI ...");
+  }
 );
 
 app.listen(PORT, () => {
