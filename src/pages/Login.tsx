@@ -48,6 +48,7 @@ export const Login: React.FC = () => {
         <Message>
           New to us?{" "}
           <a href="http://localhost:3005/auth/linkedin">
+            {" "}
             Sign Up with LinkedIn
           </a>
         </Message>
