@@ -1,0 +1,21 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "Server for TimeLogger-App",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-session": "^1.17.0",
+    "passport-linkedin-oauth2": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.2",
+    "nodemon": "^2.0.2"
+  }
+}
