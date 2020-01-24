@@ -6,16 +6,16 @@ exports.seed = function(knex) {
       // Inserts seed entries
       return knex("users").insert([
         {
-          Id: "1",
+          LinkedinId: "linkedin-123",
           Username: "John",
-          Password: "asougfh",
-          Email: "john@gmail.com"
+          Firstname: "oausfbh",
+          Lastname: "daslifgh"
         },
         {
-          Id: "2",
+          LinkedinId: "linkedin-456",
           Username: "Jennefer",
-          Password: "akjsfn",
-          Email: "jennefer@gmail.com"
+          Firstname: "asdofuhfwqa",
+          Lastname: "sdgkuh"
         }
       ]);
     });

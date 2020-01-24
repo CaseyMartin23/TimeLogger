@@ -2,11 +2,22 @@ const express = require("express");
 const app = express();
 // const app = require("express").Router();
 const passport = require("passport");
-const session = require("express-session");
+const cookieSession = require("cookie-session");
 const LinkedinStrategy = require("passport-linkedin-oauth2").Strategy;
 const keys = require("./Keys/keys");
+const knex = require("../db/knex");
 const PORT = process.env.PORT || 3005;
-var knex = require("../db/knex");
+
+// <============= Intialize Passport =============>
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use(
+  cookieSession({
+    maxAge: 24 * 60 * 60 * 1000,
+    keys: [keys.session.cookieKey]
+  })
+);
 
 // <============= Default Express =============>
 console.log("Server has started ....");
@@ -15,15 +26,6 @@ app.get("/", function(req, res) {
 });
 
 // <============= Database Operations ============>
-app.get("/todos", (req, res) => {
-  console.log("getting todos");
-  knex
-    .select()
-    .from("todos")
-    .then(todos => {
-      res.send(todos);
-    });
-});
 
 app.get("/users", (req, res) => {
   console.log("getting users");
@@ -43,12 +45,43 @@ passport.use(
       clientSecret: keys.Linkedin.clientSecret,
       callbackURL: "http://localhost:3005/auth/linkedin/redirect"
     },
-    (accessToken, refreshToken, profile, done) => {
-      console.log("passport callback has fired ...");
-      console.log("This is the porfile data => ", profile);
+    async (accessToken, refreshToken, profile, done) => {
+      console.log(
+        `<===== Got ${profile.name.givenName}'s Profile Data ... =====>`
+      );
+
+      const user = await knex("users")
+        .first("*")
+        .where({ LinkedinId: profile.id });
+
+      console.log("This user from database ===> ", user);
+
+      if (user) {
+        console.log("This user already exists ...");
+        return done(null, user);
+      }
+      console.log("Creating a new user ...");
+      const newUser = await knex("users").insert({
+        LinkedinId: profile.id,
+        Username: profile.displayName,
+        Firstname: profile.name.givenName,
+        Lastname: profile.name.familyName
+      });
+      return done(null, newUser);
     }
   )
 );
+// <============= Serialization/Deserialization =============>
+passport.serializeUser((user, done) => {
+  done(null, user.LinkedinId);
+});
+
+passport.deserializeUser((id, done) => {
+  const user = knex("users")
+    .first("*")
+    .where({ LinkedinId: id });
+  done(null, user);
+});
 
 // <============= Routes =============>
 app.get("/auth/logout", (req, res) => {
@@ -67,7 +100,7 @@ app.get(
   "/auth/linkedin/redirect",
   passport.authenticate("linkedin"),
   (req, res) => {
-    res.send("You've reached the redirect URI ...");
+    res.redirect("http://localhost:3000/Home");
   }
 );
 
