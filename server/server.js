@@ -37,6 +37,15 @@ app.get("/users", (req, res) => {
     });
 });
 
+// <============= Serialization/Deserialization =============>
+passport.serializeUser((user, done) => {
+  done(null, user);
+});
+
+passport.deserializeUser((user, done) => {
+  done(null, user);
+});
+
 // <============= Linkedin Strategy =============>
 passport.use(
   new LinkedinStrategy(
@@ -54,10 +63,9 @@ passport.use(
         .first("*")
         .where({ LinkedinId: profile.id });
 
-      console.log("This user from database ===> ", user);
-
       if (user) {
         console.log("This user already exists ...");
+        console.log("This user from database ===> ", user);
         return done(null, user);
       }
       console.log("Creating a new user ...");
@@ -71,17 +79,6 @@ passport.use(
     }
   )
 );
-// <============= Serialization/Deserialization =============>
-passport.serializeUser((user, done) => {
-  done(null, user.LinkedinId);
-});
-
-passport.deserializeUser((id, done) => {
-  const user = knex("users")
-    .first("*")
-    .where({ LinkedinId: id });
-  done(null, user);
-});
 
 // <============= Routes =============>
 app.get("/auth/logout", (req, res) => {
