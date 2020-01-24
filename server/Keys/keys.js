@@ -6,5 +6,8 @@ module.exports = {
   postgresDB: {
     db_URI:
       "postgres://egbqzaob:Gec1eHqUQThY4tOOxSpBzcd0H-UYGz_i@rajje.db.elephantsql.com:5432/egbqzaob"
+  },
+  session: {
+    cookieKey: "IHaveABlueFacebookMugOnMyDeskTimeLogger"
   }
 };
