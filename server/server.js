@@ -8,33 +8,13 @@ const keys = require("./Keys/keys");
 const knex = require("../db/knex");
 const PORT = process.env.PORT || 3005;
 
-// <============= Intialize Passport =============>
-app.use(passport.initialize());
-app.use(passport.session());
-
-app.use(
-  cookieSession({
-    maxAge: 24 * 60 * 60 * 1000,
-    keys: [keys.session.cookieKey]
-  })
-);
+let loggedInUsersId;
 
 // <============= Default Express =============>
 console.log("Server has started ....");
+
 app.get("/", function(req, res) {
-  res.send("Hello");
-});
-
-// <============= Database Operations ============>
-
-app.get("/users", (req, res) => {
-  console.log("getting users");
-  knex
-    .select()
-    .from("users")
-    .then(users => {
-      res.send(users);
-    });
+  res.send(loggedInUsersId);
 });
 
 // <============= Serialization/Deserialization =============>
@@ -45,6 +25,17 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser((user, done) => {
   done(null, user);
 });
+
+// <============= Intialize Passport =============>
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use(
+  cookieSession({
+    maxAge: 24 * 60 * 60 * 1000,
+    keys: [keys.session.cookieKey]
+  })
+);
 
 // <============= Linkedin Strategy =============>
 passport.use(
@@ -97,9 +88,19 @@ app.get(
   "/auth/linkedin/redirect",
   passport.authenticate("linkedin"),
   (req, res) => {
+    console.log(
+      "This is requested user LinkedinId ==> ",
+      typeof req.user.LinkedinId
+    );
+    loggedInUsersId = req.user.LinkedinId;
     res.redirect("http://localhost:3000/Home");
   }
 );
+
+// <============= Sending LoggedIn to Front-end =============>
+// app.get("/loggedIn", (req, res) => {
+//   if()
+// })
 
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);

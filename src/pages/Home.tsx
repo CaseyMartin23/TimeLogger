@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Image,
   Button,
@@ -12,6 +12,8 @@ import { VerticalSidebar } from "../components/VerticalSideBar";
 // import Logo from "../assets/timelogger_logo.png";
 export const Home: React.FC = () => {
   const [active = "home", setActive] = useState({});
+
+  useEffect(() => {});
 
   return (
     <div>
