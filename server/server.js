@@ -4,7 +4,7 @@ const app = express();
 const passport = require("passport");
 const cookieSession = require("cookie-session");
 const LinkedinStrategy = require("passport-linkedin-oauth2").Strategy;
-const keys = require("./Keys/keys");
+const keys = require("../Keys/keys");
 const knex = require("../db/knex");
 const PORT = process.env.PORT || 3005;
 
