@@ -9,13 +9,34 @@ import {
   Icon
 } from "semantic-ui-react";
 import { VerticalSidebar } from "../components/VerticalSideBar";
+
+import { Redirect } from "react-router-dom";
+
 // import Logo from "../assets/timelogger_logo.png";
 export const Home: React.FC = () => {
   const [active = "home", setActive] = useState({});
+  const [loggedIn, setLoggedIN] = useState<string | null>(null);
+  const [redirecting, setRedirecting] = useState<string | null>(null);
 
-  useEffect(() => {});
+  const fetchUserID = () => {
+    fetch("/logged-in-user")
+      .then(res => res.json())
+      .then(userID => {
+        setLoggedIN(userID.value);
+      });
+  };
 
-  return (
+  const authUser = () => {
+    if (loggedIn === null) return;
+    if (loggedIn === "") setRedirecting("/");
+  };
+
+  useEffect(fetchUserID, []);
+  useEffect(authUser, [loggedIn]);
+
+  return redirecting !== null ? (
+    <Redirect to={redirecting} />
+  ) : (
     <div>
       <Grid celled="internally">
         <Grid.Row width={15}>

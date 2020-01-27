@@ -13,8 +13,10 @@ let loggedInUsersId;
 // <============= Default Express =============>
 console.log("Server has started ....");
 
-app.get("/", function(req, res) {
-  res.send(loggedInUsersId);
+app.get("/logged-in-user", function(req, res) {
+  res.send({
+    value: loggedInUsersId
+  });
 });
 
 // <============= Serialization/Deserialization =============>
