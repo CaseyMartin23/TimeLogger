@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   Form,
@@ -9,8 +9,29 @@ import {
   Segment
 } from "semantic-ui-react";
 import "semantic-ui-css/semantic.min.css";
+import { Redirect } from "react-router-dom";
 
 export const Login: React.FC = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const isUserLoggedIn = () => {
+    setLoading(true);
+    fetch("/whoami")
+      .then(res => res.json())
+      .then(jsonRes => {
+        if (!jsonRes.LinkedinId) setIsLoggedIn(false);
+        if (jsonRes) setIsLoggedIn(true);
+      });
+    setLoading(false);
+  };
+
+  useEffect(isUserLoggedIn, []);
+
+  if (loading) return <div>Loading ...</div>;
+
+  if (isLoggedIn) return <Redirect to="/Home" />;
+
   return (
     <Grid textAlign="center" style={{ height: "100vh" }} verticalAlign="middle">
       <Grid.Column style={{ maxWidth: 450 }}>

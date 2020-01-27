@@ -9,34 +9,34 @@ import {
   Icon
 } from "semantic-ui-react";
 import { VerticalSidebar } from "../components/VerticalSideBar";
-
 import { Redirect } from "react-router-dom";
 
 // import Logo from "../assets/timelogger_logo.png";
 export const Home: React.FC = () => {
   const [active = "home", setActive] = useState({});
-  const [loggedIn, setLoggedIN] = useState<string | null>(null);
-  const [redirecting, setRedirecting] = useState<string | null>(null);
+  const [loggedIn, setLoggedIN] = useState();
+  const [loaded, setLoaded] = useState<boolean>(false);
 
-  const fetchUserID = () => {
-    fetch("/logged-in-user")
+  const fetchUserData = () => {
+    console.log("fetching user data ....");
+    setLoaded(false);
+    fetch("/whoami")
       .then(res => res.json())
-      .then(userID => {
-        setLoggedIN(userID.value);
+      .then(jsonRes => {
+        console.log(jsonRes);
+        setLoggedIN(jsonRes.LinkedinId);
+        setLoaded(true);
       });
   };
+  useEffect(fetchUserData, []);
 
-  const authUser = () => {
-    if (loggedIn === null) return;
-    if (loggedIn === "") setRedirecting("/");
-  };
+  console.log("Loggedin ===> ", loggedIn);
 
-  useEffect(fetchUserID, []);
-  useEffect(authUser, [loggedIn]);
+  if (!loaded) return <div>Loading ...</div>;
 
-  return redirecting !== null ? (
-    <Redirect to={redirecting} />
-  ) : (
+  if (!loggedIn && loaded) return <Redirect to="/" />;
+
+  return (
     <div>
       <Grid celled="internally">
         <Grid.Row width={15}>

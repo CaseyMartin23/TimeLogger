@@ -8,36 +8,19 @@ const keys = require("./Keys/keys");
 const knex = require("../db/knex");
 const PORT = process.env.PORT || 3005;
 
-let loggedInUsersId;
-
-// <============= Default Express =============>
 console.log("Server has started ....");
 
-app.get("/logged-in-user", function(req, res) {
-  res.send({
-    value: loggedInUsersId
-  });
-});
-
-// <============= Serialization/Deserialization =============>
-passport.serializeUser((user, done) => {
-  done(null, user);
-});
-
-passport.deserializeUser((user, done) => {
-  done(null, user);
-});
-
-// <============= Intialize Passport =============>
-app.use(passport.initialize());
-app.use(passport.session());
-
+// <============= Cookies Session =============>
 app.use(
   cookieSession({
     maxAge: 24 * 60 * 60 * 1000,
     keys: [keys.session.cookieKey]
   })
 );
+
+// <============= Intialize Passport =============>
+app.use(passport.initialize());
+app.use(passport.session());
 
 // <============= Linkedin Strategy =============>
 passport.use(
@@ -90,23 +73,28 @@ app.get(
   "/auth/linkedin/redirect",
   passport.authenticate("linkedin"),
   (req, res) => {
-    console.log(
-      "This is requested user LinkedinId ==> ",
-      typeof req.user.LinkedinId
-    );
-    loggedInUsersId = req.user.LinkedinId;
     res.redirect("http://localhost:3000/Home");
   }
 );
 
-// <============= Sending LoggedIn to Front-end =============>
-// app.get("/loggedIn", (req, res) => {
-//   if()
-// })
+app.get("/whoami", (req, res) => {
+  console.log(
+    "This is the user info in session ==> ",
+    req.session.passport.user
+  );
+  res.send(req.session.passport.user);
+});
 
+// <============= Serialization/Deserialization =============>
+passport.serializeUser((user, done) => {
+  done(null, user);
+});
+
+passport.deserializeUser((user, done) => {
+  done(null, user);
+});
+
+// <============= Server's Port =============>
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
 });
-// consumerKey: "86g059et8y7aor",
-// consumerSecret: "EPDAbpMZaLiqdKTP",
-// callbackURL: "/auth/linkedin/callback"
