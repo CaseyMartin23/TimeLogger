@@ -1,13 +1,9 @@
-const host = "localhost",
-  username = "postgres",
-  password = "admin",
-  port = "5432",
-  db = "timelogger_db";
+const keys = require("./Keys/keys");
 
 module.exports = {
   development: {
     client: "pg",
-    connection: `postgres://${username}:${password}@${host}:${port}/${db}`,
+    connection: keys.postgresDB.db_URI,
     migrations: {
       directory: __dirname + "/db/migrations"
     },
@@ -17,7 +13,7 @@ module.exports = {
   },
   production: {
     client: "pg",
-    connection: process.env.DATABASE_URL,
+    connection: keys.postgresDB.db_URI,
     migrations: {
       directory: __dirname + "/db/migrations"
     },
