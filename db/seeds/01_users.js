@@ -9,13 +9,15 @@ exports.seed = function(knex) {
           LinkedinId: "linkedin-123",
           Username: "John",
           Firstname: "oausfbh",
-          Lastname: "daslifgh"
+          Lastname: "daslifgh",
+          UserRole: "Dancer"
         },
         {
           LinkedinId: "linkedin-456",
           Username: "Jennefer",
           Firstname: "asdofuhfwqa",
-          Lastname: "sdgkuh"
+          Lastname: "sdgkuh",
+          UserRole: "Yeeter"
         }
       ]);
     });

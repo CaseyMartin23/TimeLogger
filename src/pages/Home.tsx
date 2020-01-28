@@ -13,26 +13,31 @@ import { Redirect } from "react-router-dom";
 
 // import Logo from "../assets/timelogger_logo.png";
 export const Home: React.FC = () => {
-  const [active = "home", setActive] = useState({});
+  const [active, setActive] = useState();
   const [loggedIn, setLoggedIN] = useState();
   const [loaded, setLoaded] = useState<boolean>(false);
 
-  const fetchUserData = () => {
-    console.log("fetching user data ....");
+  const fetchUserData = async () => {
     setLoaded(false);
-    fetch("/whoami")
-      .then(res => res.json())
-      .then(jsonRes => {
-        console.log(jsonRes);
-        setLoggedIN(jsonRes.LinkedinId);
-        setLoaded(true);
-      });
+    const res = await fetch("/whoami");
+    if (res.status === 200 || res.status === 302) {
+      const json = await res.json();
+      setLoggedIN(json.LinkedinId);
+      return setLoaded(true);
+    }
+    setLoggedIN(false);
+    setLoaded(true);
   };
-  useEffect(fetchUserData, []);
+  useEffect(() => {
+    fetchUserData();
+  }, []);
 
   console.log("Loggedin ===> ", loggedIn);
 
-  if (!loaded) return <div>Loading ...</div>;
+  if (!loaded) {
+    console.log("Im on the home page .....");
+    return <div>Loading ...</div>;
+  }
 
   if (!loggedIn && loaded) return <Redirect to="/" />;
 

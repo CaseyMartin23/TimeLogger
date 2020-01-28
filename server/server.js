@@ -8,7 +8,15 @@ const keys = require("../Keys/keys");
 const knex = require("../db/knex");
 const PORT = process.env.PORT || 3005;
 
+let userRole;
+
 console.log("Server has started ....");
+
+// <============= Get User Role =============>
+app.get("/user-role/:role", (req, res) => {
+  userRole = req.params.role;
+  console.log("this is request parmas ==> ", req.params.role);
+});
 
 // <============= Cookies Session =============>
 app.use(
@@ -49,7 +57,8 @@ passport.use(
         LinkedinId: profile.id,
         Username: profile.displayName,
         Firstname: profile.name.givenName,
-        Lastname: profile.name.familyName
+        Lastname: profile.name.familyName,
+        UserRole: userRole
       });
       return done(null, newUser);
     }
@@ -57,6 +66,7 @@ passport.use(
 );
 
 // <============= Routes =============>
+
 app.get("/auth/logout", (req, res) => {
   // handle with passport
   res.send("Logging out....");
