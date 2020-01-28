@@ -61,7 +61,12 @@ export const Login: React.FC = () => {
               type="password"
             />
 
-            <Button color="blue" fluid size="large">
+            <Button
+              href="http://localhost:3005/auth/linkedin"
+              color="blue"
+              fluid
+              size="large"
+            >
               Login
             </Button>
           </Segment>
