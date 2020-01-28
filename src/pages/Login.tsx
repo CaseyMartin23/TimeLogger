@@ -1,57 +1,110 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   Form,
   Grid,
   Header,
-  // Image,
+  Radio,
   Message,
-  Segment
+  Segment,
+  Icon
 } from "semantic-ui-react";
+import { Redirect } from "react-router-dom";
 import "semantic-ui-css/semantic.min.css";
 
 export const Login: React.FC = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [userRole, setUserRole] = useState("");
+
+  const onRadioClicker = (currentValue: string) => {
+    setUserRole(currentValue);
+  };
+
+  const isUserLoggedIn = async () => {
+    setLoading(true);
+    fetch("/whoami")
+      .then(res => res.json())
+      .then(jsonRes => {
+        if (!jsonRes.LinkedinId) setIsLoggedIn(false);
+        if (jsonRes) setIsLoggedIn(true);
+      });
+    setLoading(false);
+  };
+
+  const postUserRole = () => {
+    fetch(`/user-role/${userRole}`);
+    console.log("This is the userRole ==> ", userRole);
+  };
+
+  useEffect(isUserLoggedIn, []);
+
+  useEffect(postUserRole, [userRole]);
+
+  if (loading) {
+    console.log("Im on the login page .....");
+    return <div>Loading ...</div>;
+  }
+
+  if (isLoggedIn) return <Redirect to="/Home" />;
+
   return (
-    <Grid textAlign="center" style={{ height: "100vh" }} verticalAlign="middle">
+    <Grid centered={true} style={{ height: "100vh" }} verticalAlign="middle">
       <Grid.Column style={{ maxWidth: 450 }}>
         <Header as="h2" color="blue" textAlign="center">
-          {/* <Image src="/assets/linkedin.png" /> */}
-          Sign in
+          TimeLogger
         </Header>
-        <Form size="large">
-          <Segment stacked>
-            <Form.Input
-              fluid
-              icon="user"
-              iconPosition="left"
-              placeholder="Username"
-            />
-            <Form.Input
-              fluid
-              icon="mail"
-              iconPosition="left"
-              placeholder="E-mail address"
-            />
-            <Form.Input
-              fluid
-              icon="lock"
-              iconPosition="left"
-              placeholder="Password"
-              type="password"
-            />
 
-            <Button color="blue" fluid size="large">
+        <Header as="h3" color="blue" textAlign="center">
+          Log In
+        </Header>
+        <Segment placeholder>
+          <Form>
+            <div className="userRole">
+              <Form.Field>Select your role:</Form.Field>
+              <Radio
+                radio
+                label="Freelancer"
+                name="radioGroup"
+                onClick={() => onRadioClicker("freelance")}
+                checked={userRole === "freelance"}
+              />
+              <Radio
+                radio
+                label="Developer"
+                name="radioGroup"
+                onClick={() => onRadioClicker("dev")}
+                checked={userRole === "dev"}
+              />
+              <Radio
+                radio
+                label="Project Manager"
+                name="radioGroup"
+                onClick={() => onRadioClicker("project_man")}
+                checked={userRole === "project_man"}
+              />
+              <Radio
+                radio
+                label="Account Manager"
+                name="radioGroup"
+                onClick={() => onRadioClicker("acc_man")}
+                checked={userRole === "acc_man"}
+              />
+              <Radio
+                radio
+                label="Admin"
+                name="radioGroup"
+                onClick={() => onRadioClicker("admin")}
+                checked={userRole === "admin"}
+              />
+            </div>
+            <Button href="http://localhost:3005/auth/linkedin" color="linkedin">
+              <Icon name="linkedin" />
               Login
             </Button>
-          </Segment>
-        </Form>
-        <Message>
-          New to us?{" "}
-          <a href="http://localhost:3005/auth/linkedin">
-            {" "}
-            Sign Up with LinkedIn
-          </a>
-        </Message>
+          </Form>
+        </Segment>
+        <Message></Message>
       </Grid.Column>
     </Grid>
   );

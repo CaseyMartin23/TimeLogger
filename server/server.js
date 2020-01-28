@@ -4,14 +4,21 @@ const app = express();
 const passport = require("passport");
 const cookieSession = require("cookie-session");
 const LinkedinStrategy = require("passport-linkedin-oauth2").Strategy;
-const keys = require("./Keys/keys");
+const keys = require("../Keys/keys");
 const knex = require("../db/knex");
 const PORT = process.env.PORT || 3005;
 
-// <============= Intialize Passport =============>
-app.use(passport.initialize());
-app.use(passport.session());
+let userRole;
 
+console.log("Server has started ....");
+
+// <============= Get User Role =============>
+app.get("/user-role/:role", (req, res) => {
+  userRole = req.params.role;
+  console.log("this is request parmas ==> ", req.params.role);
+});
+
+// <============= Cookies Session =============>
 app.use(
   cookieSession({
     maxAge: 24 * 60 * 60 * 1000,
@@ -19,32 +26,9 @@ app.use(
   })
 );
 
-// <============= Default Express =============>
-console.log("Server has started ....");
-app.get("/", function(req, res) {
-  res.send("Hello");
-});
-
-// <============= Database Operations ============>
-
-app.get("/users", (req, res) => {
-  console.log("getting users");
-  knex
-    .select()
-    .from("users")
-    .then(users => {
-      res.send(users);
-    });
-});
-
-// <============= Serialization/Deserialization =============>
-passport.serializeUser((user, done) => {
-  done(null, user);
-});
-
-passport.deserializeUser((user, done) => {
-  done(null, user);
-});
+// <============= Intialize Passport =============>
+app.use(passport.initialize());
+app.use(passport.session());
 
 // <============= Linkedin Strategy =============>
 passport.use(
@@ -73,7 +57,8 @@ passport.use(
         LinkedinId: profile.id,
         Username: profile.displayName,
         Firstname: profile.name.givenName,
-        Lastname: profile.name.familyName
+        Lastname: profile.name.familyName,
+        UserRole: userRole
       });
       return done(null, newUser);
     }
@@ -81,6 +66,7 @@ passport.use(
 );
 
 // <============= Routes =============>
+
 app.get("/auth/logout", (req, res) => {
   // handle with passport
   res.send("Logging out....");
@@ -101,9 +87,24 @@ app.get(
   }
 );
 
+app.get("/whoami", (req, res) => {
+  console.log(
+    "This is the user info in session ==> ",
+    req.session.passport.user
+  );
+  res.send(req.session.passport.user);
+});
+
+// <============= Serialization/Deserialization =============>
+passport.serializeUser((user, done) => {
+  done(null, user);
+});
+
+passport.deserializeUser((user, done) => {
+  done(null, user);
+});
+
+// <============= Server's Port =============>
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
 });
-// consumerKey: "86g059et8y7aor",
-// consumerSecret: "EPDAbpMZaLiqdKTP",
-// callbackURL: "/auth/linkedin/callback"

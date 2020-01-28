@@ -1,4 +1,4 @@
-const keys = require("./server/Keys/keys");
+const keys = require("./Keys/keys");
 
 module.exports = {
   development: {
