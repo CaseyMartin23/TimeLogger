@@ -1,5 +1,5 @@
 import React from "react";
-import { Menu, Dropdown, Icon, Image, Header, Input } from "semantic-ui-react";
+import { Menu, Dropdown, Icon, Image, Header } from "semantic-ui-react";
 import image from "../assets/sample.png";
 export const VerticalSidebar: React.FC = () => {
   return (
