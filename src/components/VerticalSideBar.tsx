@@ -4,7 +4,7 @@ import image from "../assets/sample.png";
 export const VerticalSidebar: React.FC = () => {
   return (
     <div className="sidebar">
-      <Menu vertical>
+      <Menu fixed="left" vertical>
         <Menu.Item>
           <Header as="h4">
             <Image circular src={image} size="mini" />
@@ -66,7 +66,6 @@ export const VerticalSidebar: React.FC = () => {
           </Dropdown.Menu>
         </Dropdown>
         <Menu.Item link>Companies</Menu.Item>
-        <Menu.Item link>Log out</Menu.Item>
       </Menu>
     </div>
   );

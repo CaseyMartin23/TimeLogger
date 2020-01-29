@@ -1,25 +1,11 @@
 import React, { useState, useEffect } from "react";
-import {
-  Button,
-  Form,
-  Grid,
-  Header,
-  Radio,
-  Message,
-  Segment,
-  Icon
-} from "semantic-ui-react";
+import { Button, Form, Grid, Header, Segment, Icon } from "semantic-ui-react";
 import { Redirect } from "react-router-dom";
 import "semantic-ui-css/semantic.min.css";
 
 export const Login: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [userRole, setUserRole] = useState("");
-
-  const onRadioClicker = (currentValue: string) => {
-    setUserRole(currentValue);
-  };
 
   const isUserLoggedIn = async () => {
     setLoading(true);
@@ -27,28 +13,29 @@ export const Login: React.FC = () => {
     const res = await fetch("/whoami");
     if (res.status === 200 || res.status === 302) {
       const json = await res.json();
-      if (!json.LinkedinId) setIsLoggedIn(false);
-      return setIsLoggedIn(true);
+      console.log("this is json", json);
+      console.log("this is first call for isloggedIn", isLoggedIn);
+      if (json.LinkedinId !== "") {
+        setIsLoggedIn(true);
+        return setLoading(false);
+      }
+      console.log("this is second call for isloggedIn", isLoggedIn);
+      return setIsLoggedIn(false);
     }
     console.log("Im done loading ...");
     return setLoading(false);
   };
 
-  const postUserRole = () => {
-    fetch(`/user-role/${userRole}`);
-    console.log("This is the userRole ==> ", userRole);
-  };
-
-  useEffect(() => isUserLoggedIn());
-
-  useEffect(postUserRole, [userRole]);
+  useEffect(() => {
+    isUserLoggedIn();
+  }, []);
 
   if (loading) {
     console.log("Im on the login page .....");
     return <div>Loading ...</div>;
   }
 
-  if (isLoggedIn) return <Redirect to="/home" />;
+  if (isLoggedIn) return <Redirect to="/" />;
 
   return (
     <Grid centered={true} style={{ height: "100vh" }} verticalAlign="middle">
@@ -62,51 +49,12 @@ export const Login: React.FC = () => {
         </Header>
         <Segment placeholder>
           <Form>
-            <div className="userRole">
-              <Form.Field>Select your role:</Form.Field>
-              <Radio
-                radio
-                label="Freelancer"
-                name="radioGroup"
-                onClick={() => onRadioClicker("freelance")}
-                checked={userRole === "freelance"}
-              />
-              <Radio
-                radio
-                label="Developer"
-                name="radioGroup"
-                onClick={() => onRadioClicker("dev")}
-                checked={userRole === "dev"}
-              />
-              <Radio
-                radio
-                label="Project Manager"
-                name="radioGroup"
-                onClick={() => onRadioClicker("project_man")}
-                checked={userRole === "project_man"}
-              />
-              <Radio
-                radio
-                label="Account Manager"
-                name="radioGroup"
-                onClick={() => onRadioClicker("acc_man")}
-                checked={userRole === "acc_man"}
-              />
-              <Radio
-                radio
-                label="Admin"
-                name="radioGroup"
-                onClick={() => onRadioClicker("admin")}
-                checked={userRole === "admin"}
-              />
-            </div>
             <Button href="http://localhost:3005/auth/linkedin" color="linkedin">
               <Icon name="linkedin" />
               Login
             </Button>
           </Form>
         </Segment>
-        <Message></Message>
       </Grid.Column>
     </Grid>
   );

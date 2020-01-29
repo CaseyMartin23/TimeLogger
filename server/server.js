@@ -67,9 +67,14 @@ passport.use(
 
 // <============= Routes =============>
 
+app.get("/remember-me/:remember", (req, res) => {
+  rememberUser = req.params.remember;
+});
+
 app.get("/auth/logout", (req, res) => {
-  // handle with passport
-  res.send("Logging out....");
+  req.logOut();
+  req.session = null;
+  res.redirect("http://localhost:3000/login");
 });
 
 app.get(
@@ -83,7 +88,7 @@ app.get(
   "/auth/linkedin/redirect",
   passport.authenticate("linkedin"),
   (req, res) => {
-    res.redirect("http://localhost:3000/home");
+    res.redirect("http://localhost:3000/");
   }
 );
 

@@ -33,7 +33,7 @@ export const ContainerBody = () => {
               "Snooze",
               { key: "done", content: "Done", positive: true }
             ]}
-            closeIcon="true"
+            // closeIcon="true"
           />
         </h3>
       </div>
