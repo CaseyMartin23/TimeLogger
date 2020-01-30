@@ -9,96 +9,108 @@ import "../stylesheets/AppStyle.css";
 export const Home: React.FC = () => {
   const [loggedIn, setLoggedIN] = useState();
   const [loaded, setLoaded] = useState<boolean>(false);
-  const [userRole, setUserRole] = useState("");
+  const [open, setOpen] = useState(false);
+
+  console.log("Im on home page");
 
   const onRadioClicker = (currentValue: string) => {
-    setUserRole(currentValue);
+    updateUser(currentValue);
+    console.log("this is the userRole ==> ", currentValue);
+    setOpen(false);
+    console.log("User loggedin ==> ", loggedIn);
   };
 
-  const roleSpecification = () => {
-    // if (userRole === "") return "Please specify your role... ";
+  const updateUser = (userRole: string) => {
+    console.log("updateUser-value->", userRole);
+    fetch(`/update-user-role/${userRole}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+    console.log("This is userRole after update on UI ==> ", userRole);
   };
 
   const fetchUserData = async () => {
     setLoaded(false);
     const res = await fetch("/whoami");
     if (res.status === 200 || res.status === 302) {
-      console.log("This is res ", res);
+      console.log("result of home_page res is ", res);
       console.log("loggedin check after res", loggedIn);
       const json = await res.json();
       console.log("this is json", json);
-
-      setLoggedIN(json.LinkedinId);
+      setLoggedIN(json);
+      console.log("fetchUserData->", json);
+      // if (json.UserRole === "") {
+      setOpen(true);
+      // }
       return setLoaded(true);
     }
     setLoggedIN(false);
     setLoaded(true);
   };
 
-  const postUserRole = () => {
-    fetch(`/user-role/${userRole}`);
-    console.log("This is the userRole ==> ", userRole);
-  };
-
   useEffect(() => {
+    console.log("useEffect");
     fetchUserData();
   }, []);
 
-  useEffect(postUserRole, [userRole]);
-
-  console.log("Loggedin ===> ", loggedIn);
-  console.log("Im on home page");
-
   if (!loaded) return <div>Loading ...</div>;
 
-  if (!loggedIn && loaded) return <Redirect to="/login" />;
+  if (!loggedIn.LinkedInId && loaded) return <Redirect to="/login" />;
 
   return (
     <div className="AppStyle">
       <Modal
         dimmer
-        open={userRole === ""}
+        open={open}
         centered={true}
         size="tiny"
-        style={{ height: "300px", marginLeft: "30%" }}
+        style={{ height: "300px", marginLeft: "30%", marginTop: "10%" }}
       >
         <Modal.Header>Select your position:</Modal.Header>
         <Modal.Content>
-          <Radio
-            radio
-            label="Freelancer"
-            name="radioGroup"
-            onClick={() => onRadioClicker("freelance")}
-            checked={userRole === "freelance"}
-          />
-          <Radio
-            radio
-            label="Developer"
-            name="radioGroup"
-            onClick={() => onRadioClicker("dev")}
-            checked={userRole === "dev"}
-          />
-          <Radio
-            radio
-            label="Project Manager"
-            name="radioGroup"
-            onClick={() => onRadioClicker("project_man")}
-            checked={userRole === "project_man"}
-          />
-          <Radio
-            radio
-            label="Account Manager"
-            name="radioGroup"
-            onClick={() => onRadioClicker("acc_man")}
-            checked={userRole === "acc_man"}
-          />
-          <Radio
-            radio
-            label="Admin"
-            name="radioGroup"
-            onClick={() => onRadioClicker("admin")}
-            checked={userRole === "admin"}
-          />
+          <Grid centered={true}>
+            <Grid.Row>
+              <Radio
+                radio
+                label="Freelancer"
+                name="radioGroup"
+                onClick={() => onRadioClicker("Freelancer")}
+                checked={loggedIn.userRole === "Freelancer"}
+              />
+              <Radio
+                radio
+                label="Developer"
+                name="radioGroup"
+                onClick={() => onRadioClicker("Developer")}
+                checked={loggedIn.userRole === "Developer"}
+              />
+              <Radio
+                radio
+                label="Project Manager"
+                name="radioGroup"
+                onClick={() => onRadioClicker("Project Manager")}
+                checked={loggedIn.userRole === "Project Manager"}
+              />
+            </Grid.Row>
+            <Grid.Row>
+              <Radio
+                radio
+                label="Account Manager"
+                name="radioGroup"
+                onClick={() => onRadioClicker("Account Manager")}
+                checked={loggedIn.userRole === "Account Manager"}
+              />
+              <Radio
+                radio
+                label="Admin"
+                name="radioGroup"
+                onClick={() => onRadioClicker("Admin")}
+                checked={loggedIn.userRole === "Admin"}
+              />
+            </Grid.Row>
+          </Grid>
         </Modal.Content>
       </Modal>
 
@@ -106,7 +118,12 @@ export const Home: React.FC = () => {
       <Grid columns={2}>
         <Grid.Row>
           <Grid.Column width={2}>
-            <VerticalSidebar />
+            <VerticalSidebar
+              Username={loggedIn.Username}
+              Firstname={loggedIn.Firstname}
+              Lastname={loggedIn.Lastname}
+              UserRole={loggedIn.UserRole}
+            />
           </Grid.Column>
           <Grid.Column width={12}>
             <ContainerBody />

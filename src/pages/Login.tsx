@@ -11,6 +11,7 @@ export const Login: React.FC = () => {
     setLoading(true);
     console.log("Loading is ==> ", loading);
     const res = await fetch("/whoami");
+    console.log("this is result of res ==> ", res);
     if (res.status === 200 || res.status === 302) {
       const json = await res.json();
       console.log("this is json", json);
@@ -34,6 +35,8 @@ export const Login: React.FC = () => {
     console.log("Im on the login page .....");
     return <div>Loading ...</div>;
   }
+
+  console.log("Is User logged in ===> ", isLoggedIn);
 
   if (isLoggedIn) return <Redirect to="/" />;
 

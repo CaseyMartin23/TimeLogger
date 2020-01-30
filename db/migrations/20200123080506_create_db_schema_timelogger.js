@@ -4,7 +4,7 @@ exports.up = function(knex) {
     table.string("Username").notNullable();
     table.string("Firstname").notNullable();
     table.string("Lastname").notNullable();
-    table.string("UserRole").notNullable();
+    table.string("UserRole");
     table.timestamp("created_at").defaultTo(knex.fn.now());
     table.timestamp("updated_at").defaultTo(knex.fn.now());
   });

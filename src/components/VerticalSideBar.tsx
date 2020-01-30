@@ -1,14 +1,22 @@
 import React from "react";
 import { Menu, Dropdown, Icon, Image, Header } from "semantic-ui-react";
 import image from "../assets/sample.png";
-export const VerticalSidebar: React.FC = () => {
+
+interface Props {
+  Username: string;
+  Firstname: string;
+  Lastname: string;
+  UserRole: string;
+}
+
+export const VerticalSidebar: React.FC<Props> = props => {
   return (
     <div className="sidebar">
       <Menu fixed="left" vertical>
         <Menu.Item>
           <Header as="h4">
             <Image circular src={image} size="mini" />
-            Patrick
+            {props.Username} : {props.UserRole}
           </Header>
         </Menu.Item>
         <Menu.Item>

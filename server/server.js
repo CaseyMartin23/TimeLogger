@@ -8,15 +8,7 @@ const keys = require("../Keys/keys");
 const knex = require("../db/knex");
 const PORT = process.env.PORT || 3005;
 
-let userRole;
-
 console.log("Server has started ....");
-
-// <============= Get User Role =============>
-app.get("/user-role/:role", (req, res) => {
-  userRole = req.params.role;
-  console.log("this is request parmas ==> ", req.params.role);
-});
 
 // <============= Cookies Session =============>
 app.use(
@@ -57,20 +49,15 @@ passport.use(
         LinkedinId: profile.id,
         Username: profile.displayName,
         Firstname: profile.name.givenName,
-        Lastname: profile.name.familyName,
-        UserRole: userRole
+        Lastname: profile.name.familyName
       });
+      console.log("New User Created!");
       return done(null, newUser);
     }
   )
 );
 
 // <============= Routes =============>
-
-app.get("/remember-me/:remember", (req, res) => {
-  rememberUser = req.params.remember;
-});
-
 app.get("/auth/logout", (req, res) => {
   req.logOut();
   req.session = null;
@@ -97,7 +84,26 @@ app.get("/whoami", (req, res) => {
     "This is the user info in session ==> ",
     req.session.passport.user
   );
+
   res.send(req.session.passport.user);
+});
+
+// <============= Update User Role =============>
+app.put("/update-user-role/:role", (req, res) => {
+  const paramRole = req.params.role;
+  console.log("update-user-param->", paramRole);
+
+  knex("users")
+    .update({ UserRole: paramRole })
+    .where({ LinkedinId: req.session.passport.user.LinkedinId })
+    .then(data => {
+      console.log("This is after update ==> ", req.session.passport.user);
+      req.session.passport.user = {
+        ...req.session.passport.user,
+        UserRole: paramRole
+      };
+      res.send(req.session.passport.user);
+    });
 });
 
 // <============= Serialization/Deserialization =============>
