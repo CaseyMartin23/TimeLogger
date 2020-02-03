@@ -13,51 +13,51 @@ export const Home: React.FC = () => {
 
   console.log("Im on home page");
 
+  const fetchUserData = async () => {
+    setLoaded(false);
+    const res = await fetch("/whoami");
+    if (res.status === 200 || res.status === 302) {
+      const json = await res.json();
+      setLoggedIN(json);
+      if (!json.UserRole) setOpen(true);
+      return setLoaded(true);
+    }
+    setLoggedIN(null);
+    return setLoaded(true);
+  };
+
+  console.log(
+    "this loggedin ==> ",
+    loggedIn,
+    "and this is loaded ==> ",
+    loaded
+  );
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
   const onRadioClicker = (currentValue: string) => {
     updateUser(currentValue);
-    console.log("this is the userRole ==> ", currentValue);
     setOpen(false);
-    console.log("User loggedin ==> ", loggedIn);
   };
 
   const updateUser = (userRole: string) => {
-    console.log("updateUser-value->", userRole);
     fetch(`/update-user-role/${userRole}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"
       }
     });
-    console.log("This is userRole after update on UI ==> ", userRole);
+    setLoggedIN({
+      ...loggedIn,
+      UserRole: userRole
+    });
   };
 
-  const fetchUserData = async () => {
-    setLoaded(false);
-    const res = await fetch("/whoami");
-    if (res.status === 200 || res.status === 302) {
-      console.log("result of home_page res is ", res);
-      console.log("loggedin check after res", loggedIn);
-      const json = await res.json();
-      console.log("this is json", json);
-      setLoggedIN(json);
-      console.log("fetchUserData->", json);
-      // if (json.UserRole === "") {
-      setOpen(true);
-      // }
-      return setLoaded(true);
-    }
-    setLoggedIN(false);
-    setLoaded(true);
-  };
-
-  useEffect(() => {
-    console.log("useEffect");
-    fetchUserData();
-  }, []);
+  if (!loggedIn && loaded) return <Redirect to="/login" />;
 
   if (!loaded) return <div>Loading ...</div>;
-
-  if (!loggedIn.LinkedInId && loaded) return <Redirect to="/login" />;
 
   return (
     <div className="AppStyle">

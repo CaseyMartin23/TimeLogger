@@ -16,7 +16,7 @@ export const VerticalSidebar: React.FC<Props> = props => {
         <Menu.Item>
           <Header as="h4">
             <Image circular src={image} size="mini" />
-            {props.Username} : {props.UserRole}
+            {props.Username || "No username"} : {props.UserRole || "No user role"}
           </Header>
         </Menu.Item>
         <Menu.Item>

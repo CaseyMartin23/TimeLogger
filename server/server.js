@@ -45,13 +45,14 @@ passport.use(
         return done(null, user);
       }
       console.log("Creating a new user ...");
-      const newUser = await knex("users").insert({
-        LinkedinId: profile.id,
-        Username: profile.displayName,
-        Firstname: profile.name.givenName,
-        Lastname: profile.name.familyName
-      });
-      console.log("New User Created!");
+      const newUser = await knex("users")
+        .insert({
+          LinkedinId: profile.id,
+          Username: profile.displayName,
+          Firstname: profile.name.givenName,
+          Lastname: profile.name.familyName
+        })
+        .returning("*");
       return done(null, newUser);
     }
   )
@@ -96,8 +97,8 @@ app.put("/update-user-role/:role", (req, res) => {
   knex("users")
     .update({ UserRole: paramRole })
     .where({ LinkedinId: req.session.passport.user.LinkedinId })
-    .then(data => {
-      console.log("This is after update ==> ", req.session.passport.user);
+    .returning()
+    .then(() => {
       req.session.passport.user = {
         ...req.session.passport.user,
         UserRole: paramRole
