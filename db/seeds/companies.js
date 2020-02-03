@@ -11,7 +11,6 @@ exports.seed = function(knex) {
         },
         {
           user_id: 2,
-
           company_name: "The Return of The Yeetable"
         }
       ]);

@@ -1,5 +1,6 @@
 exports.up = function(knex) {
   return knex.schema.createTable("companies", table => {
+    table.increments("company_id");
     table
       .integer("user_id")
       .unsigned()
@@ -8,11 +9,10 @@ exports.up = function(knex) {
       .foreign("user_id")
       .references("user_id")
       .inTable("users");
-    table.increments("id");
-    table.string("company_name");
+    table.string("company_name", [100]);
   });
 };
 
-exports.down = function(knex) {
+exports.down = knex => {
   return knex.schema.dropTable("companies");
 };

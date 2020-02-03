@@ -1,47 +1,23 @@
 import React, { useState } from "react";
-import { Menu, Container, Image, Button, Modal } from "semantic-ui-react";
-import { Redirect, Link } from "react-router-dom";
+import { Menu, Container, Button, Modal } from "semantic-ui-react";
+import Logo from "../assets/timelogger_logo.png";
+// import { Redirect, Link } from "react-router-dom";
 
 export const Menubar: React.FC = () => {
   const [open, setOpen] = useState(false);
-  // const [redirect, setRedirect] = useState(false);
-
-  // const confirmLogOut = () => {};
-
-  // const cancelLogOut = () => setOpen(false);
 
   return (
     <div>
       <>
         <Menu fixed="top" inverted color="black">
           <Container>
-            <Menu.Item as="a" header style={{ width: "250px" }}>
-              <Image
-                size="mini"
-                src="/logo.png"
-                style={{ marginRight: "50px" }}
+            <Menu.Item header style={{ width: "250px", padding: 0 }}>
+              <img
+                src={Logo}
+                alt="Timelogger logo"
+                style={{ width: "90px", height: "90px", padding: 0 }}
               />
-              Project Name
             </Menu.Item>
-            <Menu.Item as="a">Home</Menu.Item>
-
-            {/* <Dropdown item simple text="Dropdown">
-              <Dropdown.Menu>
-              <Dropdown.Item>List Item</Dropdown.Item>
-              <Dropdown.Item>List Item</Dropdown.Item>
-              <Dropdown.Divider />
-              <Dropdown.Header>Header Item</Dropdown.Header>
-              <Dropdown.Item>
-              <i className="dropdown icon" />
-              <span className="text">Submenu</span>
-              <Dropdown.Menu>
-              <Dropdown.Item>List Item</Dropdown.Item>
-              <Dropdown.Item>List Item</Dropdown.Item>
-              </Dropdown.Menu>
-              </Dropdown.Item>
-              <Dropdown.Item>List Item</Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown> */}
           </Container>
           <Menu.Item>
             <Button inverted onClick={() => setOpen(true)}>
@@ -70,7 +46,7 @@ export const Menubar: React.FC = () => {
               </Modal.Actions>
             </Modal>
           </Menu.Item>
-          {/* <Button onClick={() => }></Button> */}
+          w{" "}
         </Menu>
       </>
     </div>

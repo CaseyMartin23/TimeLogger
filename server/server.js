@@ -34,6 +34,7 @@ passport.use(
       console.log(
         `<===== Got ${profile.name.givenName}'s Profile Data ... =====>`
       );
+      console.log("This user profile from passport ==> ", profile);
 
       const user = await knex("users")
         .first("*")
@@ -50,7 +51,8 @@ passport.use(
         LinkedinId: profile.id,
         Username: profile.displayName,
         Firstname: profile.name.givenName,
-        Lastname: profile.name.familyName
+        Lastname: profile.name.familyName,
+        UserProfileImg: profile.photos[2].value
       });
       const newUser = await knex("users")
         .first("*")
@@ -103,6 +105,16 @@ app.put("/update-user-role/:role", (req, res) => {
       };
       res.send(req.session.passport.user);
     });
+});
+
+// <============= Ticket Info =============>
+app.put("/ticket-info/:ticketInfo", (req, res) => {
+  const ticketInfo = req.params.ticketInfo;
+
+  knex("user_tickets").update({
+    subject_line: ticketInfo.ticketSub,
+    description: ticketInfo.ticketDescript
+  });
 });
 
 // <============= Serialization/Deserialization =============>
