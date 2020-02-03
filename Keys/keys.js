@@ -4,8 +4,7 @@ module.exports = {
     clientSecret: "9Po3v6EAkz7YcGkn"
   },
   postgresDB: {
-    db_URI:
-      "postgres://egbqzaob:Gec1eHqUQThY4tOOxSpBzcd0H-UYGz_i@rajje.db.elephantsql.com:5432/egbqzaob"
+    db_URI: "postgres://localhost/timelogger_db"
   },
   session: {
     cookieKey: "IHaveABlueFacebookMugOnMyDeskTimeLogger"

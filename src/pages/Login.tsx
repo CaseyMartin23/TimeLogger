@@ -9,21 +9,17 @@ export const Login: React.FC = () => {
 
   const isUserLoggedIn = async () => {
     setLoading(true);
-    console.log("Loading is ==> ", loading);
     const res = await fetch("/whoami");
-    console.log("this is result of res ==> ", res);
     if (res.status === 200 || res.status === 302) {
       const json = await res.json();
-      console.log("this is json", json);
-      console.log("this is first call for isloggedIn", isLoggedIn);
-      if (json.LinkedinId !== "") {
+      console.log(json);
+      if (json.LinkedinId && json.LinkedinId.toString().length > 0) {
         setIsLoggedIn(true);
         return setLoading(false);
       }
-      console.log("this is second call for isloggedIn", isLoggedIn);
-      return setIsLoggedIn(false);
+      setIsLoggedIn(false);
+      return setLoading(false);
     }
-    console.log("Im done loading ...");
     return setLoading(false);
   };
 
@@ -32,13 +28,10 @@ export const Login: React.FC = () => {
   }, []);
 
   if (loading) {
-    console.log("Im on the login page .....");
     return <div>Loading ...</div>;
   }
 
-  console.log("Is User logged in ===> ", isLoggedIn);
-
-  if (isLoggedIn) return <Redirect to="/" />;
+  if (isLoggedIn && loading) return <Redirect to="/" />;
 
   return (
     <Grid centered={true} style={{ height: "100vh" }} verticalAlign="middle">

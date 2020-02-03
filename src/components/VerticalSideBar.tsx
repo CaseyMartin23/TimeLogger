@@ -10,13 +10,15 @@ interface Props {
 }
 
 export const VerticalSidebar: React.FC<Props> = props => {
+  console.log(props);
+
   return (
     <div className="sidebar">
       <Menu fixed="left" vertical>
         <Menu.Item>
           <Header as="h4">
             <Image circular src={image} size="mini" />
-            {props.Username} : {props.UserRole}
+            {props.Username || "No username"} : {props.UserRole || "Unassigned"}
           </Header>
         </Menu.Item>
         <Menu.Item>
