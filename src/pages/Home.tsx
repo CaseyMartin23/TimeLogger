@@ -9,22 +9,27 @@ import "../stylesheets/AppStyle.css";
 export const Home: React.FC = () => {
   const [loggedIn, setLoggedIN] = useState();
   const [loaded, setLoaded] = useState<boolean>(false);
-  const [open, setOpen] = useState(false);
-
-  console.log("Im on home page");
+  const [open, setOpen] = useState<boolean>(false);
 
   const fetchUserData = async () => {
     setLoaded(false);
     const res = await fetch("/whoami");
     if (res.status === 200 || res.status === 302) {
       const json = await res.json();
+      console.log("This is json ==> ", json);
       setLoggedIN(json);
-      if (!json.UserRole) setOpen(true);
+      if (json.UserRole === "" || !json.UserRole) {
+        setOpen(true);
+      }
       return setLoaded(true);
     }
     setLoggedIN(null);
     return setLoaded(true);
   };
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
 
   console.log(
     "this loggedin ==> ",
@@ -55,9 +60,9 @@ export const Home: React.FC = () => {
     });
   };
 
-  if (!loggedIn && loaded) return <Redirect to="/login" />;
-
   if (!loaded) return <div>Loading ...</div>;
+
+  if (!loggedIn && loaded) return <Redirect to="/login" />;
 
   return (
     <div className="AppStyle">

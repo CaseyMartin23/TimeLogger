@@ -45,14 +45,17 @@ passport.use(
         return done(null, user);
       }
       console.log("Creating a new user ...");
+
+      await knex("users").insert({
+        LinkedinId: profile.id,
+        Username: profile.displayName,
+        Firstname: profile.name.givenName,
+        Lastname: profile.name.familyName
+      });
       const newUser = await knex("users")
-        .insert({
-          LinkedinId: profile.id,
-          Username: profile.displayName,
-          Firstname: profile.name.givenName,
-          Lastname: profile.name.familyName
-        })
-        .returning("*");
+        .first("*")
+        .where({ LinkedinId: profile.id });
+      console.log("New User Created!");
       return done(null, newUser);
     }
   )
@@ -81,11 +84,6 @@ app.get(
 );
 
 app.get("/whoami", (req, res) => {
-  console.log(
-    "This is the user info in session ==> ",
-    req.session.passport.user
-  );
-
   res.send(req.session.passport.user);
 });
 

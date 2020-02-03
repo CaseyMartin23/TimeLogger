@@ -5,31 +5,34 @@ import "semantic-ui-css/semantic.min.css";
 
 export const Login: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [loaded, setLoaded] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const isUserLoggedIn = async () => {
-    setLoaded(false);
+    setLoading(true);
     const res = await fetch("/whoami");
     if (res.status === 200 || res.status === 302) {
       const json = await res.json();
-      if (!json.LinkedinId) {
+      console.log(json);
+      if (json.LinkedinId && json.LinkedinId.toString().length > 0) {
         setIsLoggedIn(true);
-        return setLoaded(true);
+        return setLoading(true);
       }
-      return setIsLoggedIn(false);
+
+      setIsLoggedIn(false);
+      return setLoading(false);
     }
-    return setLoaded(true);
+    return setLoading(false);
   };
 
   useEffect(() => {
     isUserLoggedIn();
   }, []);
 
-  if (!loaded) {
+  if (loading) {
     return <div>Loading ...</div>;
   }
 
-  if (isLoggedIn) return <Redirect to="/" />;
+  if (isLoggedIn && loading) return <Redirect to="/" />;
 
   return (
     <Grid centered={true} style={{ height: "100vh" }} verticalAlign="middle">
