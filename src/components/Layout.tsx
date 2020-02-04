@@ -51,13 +51,7 @@ const Layout: FC<LayoutProps> = ({ children }) => {
       <Grid columns={2}>
         <Grid.Row>
           <Grid.Column width={2}>
-            <VerticalSidebar
-              Username={loggedIn.Username}
-              Firstname={loggedIn.Firstname}
-              Lastname={loggedIn.Lastname}
-              UserRole={loggedIn.UserRole}
-              UserProfileImg={loggedIn.UserProfileImg}
-            />
+            <VerticalSidebar UserInfo={loggedIn} />
           </Grid.Column>
           <Grid.Column width={12}>{children}</Grid.Column>
         </Grid.Row>

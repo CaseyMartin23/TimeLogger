@@ -2,12 +2,13 @@ import React from "react";
 import { Menu, Image, Header } from "semantic-ui-react";
 
 interface Props {
-  Username: string;
-  Firstname: string;
-  Lastname: string;
-  UserRole: string;
-  UserProfileImg: string;
-  setSelected?: any;
+  UserInfo: {
+    Username: string;
+    Firstname: string;
+    Lastname: string;
+    UserRole: string;
+    UserProfileImg: string;
+  };
 }
 
 export const VerticalSidebar: React.FC<Props> = props => {
@@ -16,8 +17,9 @@ export const VerticalSidebar: React.FC<Props> = props => {
       <Menu fixed="left" vertical>
         <Menu.Item>
           <Header as="h4">
-            <Image circular src={props.UserProfileImg} size="mini" />
-            {props.Username || "No username"} : {props.UserRole || "Unassigned"}
+            <Image circular src={props.UserInfo.UserProfileImg} size="mini" />
+            {props.UserInfo.Username || "No username"} :{" "}
+            {props.UserInfo.UserRole || "Unassigned"}
           </Header>
         </Menu.Item>
         <Menu.Item>
@@ -38,5 +40,3 @@ export const VerticalSidebar: React.FC<Props> = props => {
     </div>
   );
 };
-
-// href="http://localhost:3000/companies"

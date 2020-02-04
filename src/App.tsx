@@ -8,6 +8,8 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import "semantic-ui-css/semantic.css";
 import Layout from "./components/Layout";
 import { Tickets } from "./components/Tickets";
+import { CompanyTickets } from "./components/CompanyTickets";
+import { Ticket } from "./components/Ticket";
 
 const App: React.FC = () => {
   return (
@@ -18,7 +20,9 @@ const App: React.FC = () => {
           <Layout>
             <Route exact path="/" component={Home} />
             <Route path="/companies" component={Companies} />
+            <Route path="/company-tickets" component={CompanyTickets} />
             <Route path="/tickets" component={Tickets} />
+            <Route path="/ticket" component={Ticket} />
           </Layout>
         </Switch>
       </Switch>

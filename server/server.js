@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-// const app = require("express").Router();
+const bodyParser = require("body-parser");
 const passport = require("passport");
 const cookieSession = require("cookie-session");
 const LinkedinStrategy = require("passport-linkedin-oauth2").Strategy;
@@ -9,6 +9,10 @@ const knex = require("../db/knex");
 const PORT = process.env.PORT || 3005;
 
 console.log("Server has started ....");
+
+// <============= Body-Parser =============>
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 // <============= Cookies Session =============>
 app.use(
@@ -108,14 +112,83 @@ app.put("/update-user-role/:role", (req, res) => {
 });
 
 // <============= Ticket Info =============>
-app.put("/ticket-info/:ticketInfo", (req, res) => {
-  const ticketInfo = req.params.ticketInfo;
+// app.put("/ticket-info/:ticketInfo", (req, res) => {
+//   const ticketInfo = req.params.ticketInfo;
 
-  knex("user_tickets").update({
-    subject_line: ticketInfo.ticketSub,
-    description: ticketInfo.ticketDescript
+//   knex("user_tickets").update({
+//     subject_line: ticketInfo.ticketSub,
+//     description: ticketInfo.ticketDescript
+//   });
+// });
+
+// <============= Company Creation on Database =============>
+app.post("/add-company", async (req, res) => {
+  const companyInfo = req.body;
+  console.log("company info ==> ", companyInfo);
+
+  await knex("companies").insert({
+    user_id: companyInfo.user_id,
+    company_name: companyInfo.company_name
   });
+
+  res.send("Created Company successfully !").end();
 });
+
+// <============= Getting Companies =============>
+app.get("/users-companies", async (req, res) => {
+  const companies = await knex("companies")
+    .select("*")
+    .where({ user_id: req.session.passport.user.user_id })
+    .returning()
+    .then(res => res);
+  console.log("All user companies created ==> ", companies);
+
+  res.send(companies);
+});
+
+// <============= Ticket Creation on Database =============>
+app.post("/add-ticket", async (req, res) => {
+  const ticketInfo = req.body;
+  console.log("req.body response ==> ", ticketInfo);
+
+  await knex("user_tickets").insert({
+    user_id: req.session.passport.user.user_id,
+    company_id: ticketInfo.company_id,
+    subject_line: ticketInfo.subject_line,
+    description: ticketInfo.description
+  });
+  res.send("Created ticket successfully !!!").end();
+});
+
+// <============= Getting Ticket Info Form Database =============>
+app.get("/users-company-tickets/:companyID", async (req, res) => {
+  const usersCompTickets = await knex("user_tickets")
+    .select("*")
+    .where({
+      user_id: req.session.passport.user.user_id,
+      company_id: req.params.companyID
+    })
+    .returning()
+    .then(res => res);
+  console.log("all user tickets for company ==> ", usersCompTickets);
+
+  res.send(usersCompTickets);
+});
+
+app.get("/selected-ticket/:ticketID", async (req, res) => {
+  const ticketID = req.params.ticketID;
+
+  const ticket = await knex("user_tickets")
+    .select("*")
+    .where({ ticket_id: ticketID })
+    .returning()
+    .then(res => res);
+  console.log("ticket returned ==> ", ticket);
+
+  res.send(ticket);
+});
+
+app.get("/users-tickets", (req, res) => {});
 
 // <============= Serialization/Deserialization =============>
 passport.serializeUser((user, done) => {

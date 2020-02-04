@@ -18,7 +18,7 @@ exports.up = function(knex) {
       .references("company_id")
       .inTable("companies");
     table.string("subject_line");
-    table.string("description");
+    table.string("description", [20000]);
   });
 };
 

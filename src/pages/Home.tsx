@@ -1,6 +1,5 @@
 import React from "react";
 import "../stylesheets/AppStyle.css";
-import { Tickets } from "../components/Tickets";
 import { Card } from "semantic-ui-react";
 
 export const Home: React.FC = () => {
