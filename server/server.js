@@ -188,7 +188,42 @@ app.get("/selected-ticket/:ticketID", async (req, res) => {
   res.send(ticket);
 });
 
-app.get("/users-tickets", (req, res) => {});
+// <============= User Ticket Time Logs =============>
+app.put("/add-ticket-time", (req, res) => {
+  const ticketTime = req.body;
+  console.log("ticketTime ==> ", ticketTime);
+
+  knex("user_tickets")
+    .update({ ticket_time: ticketTime.ticket_time })
+    .where({ ticket_id: ticketTime.ticket_id })
+    .returning()
+    .then(res => console.log("res addTT ==> ", res));
+});
+
+app.get("/get-ticket-time/:companyID/:ticketID", async (req, res) => {
+  const ticketCompId = req.params.companyID;
+  const ticketID = req.params.ticketID;
+  console.log("ticketCompId & ticketID ==> ", ticketCompId, ticketID);
+
+  const ticketTime = await knex("user_tickets")
+    .select("*")
+    .where({ company_id: ticketCompId, ticket_id: ticketID })
+    .returning()
+    .then(res => res);
+
+  res.send(ticketTime);
+});
+
+app.delete("/remove-ticket/:ticket_id", async (req, res) => {
+  const ticket_id = req.params.ticket_id;
+  console.log("ticket id ==> ", ticket_id);
+
+  await knex("user_tickets")
+    .where({ ticket_id: ticket_id })
+    .del();
+
+  res.send("Removed ticket successfully ...").end();
+});
 
 // <============= Serialization/Deserialization =============>
 passport.serializeUser((user, done) => {

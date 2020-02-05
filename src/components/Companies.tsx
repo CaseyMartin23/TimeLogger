@@ -1,22 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { Button, Icon, Grid, Card } from "semantic-ui-react";
 import { CompanyForm } from "./CompanyForm";
-import { useRouteMatch } from "react-router";
 
 export const Companies: React.FC = () => {
   const [showForm, setShowForm] = useState(false);
   const [companies, setCompanies] = useState();
+  const [loaded, setLoaded] = useState(false);
 
   const onClicker = () => {
     if (!showForm) return setShowForm(true);
     return setShowForm(false);
   };
 
-  useEffect(() => {
-    fetch("users-companies")
+  const getCompanies = async () => {
+    await fetch("users-companies")
       .then(res => res.json())
       .then(data => setCompanies(data));
+    setLoaded(true);
+  };
+
+  useEffect(() => {
+    getCompanies();
   }, [companies]);
+
+  if (!loaded) {
+    return <p>Loading companies...</p>;
+  }
 
   return (
     <div className="companylists">
@@ -35,7 +44,7 @@ export const Companies: React.FC = () => {
               <Icon name="plus" color="black" style={{ margin: "5px" }} />
             </Button>
           </h3>
-          {showForm ? <CompanyForm /> : ""}
+          {showForm ? <CompanyForm setShowForm={setShowForm} /> : ""}
         </Grid.Column>
         <Grid.Column>
           {(companies || []).map(

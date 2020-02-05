@@ -2,10 +2,21 @@ import React, { FC, useState, useEffect } from "react";
 import { Grid, Button, Icon, Card } from "semantic-ui-react";
 import { useRouteMatch } from "react-router";
 import { TicketForm } from "./TicketForm";
+import { TimerButton } from "./TimerButton";
 
 export const CompanyTickets: FC = () => {
   const [showForm, setShowForm] = useState<boolean>(false);
   const [userCompTickets, setUserCompTickets] = useState();
+  const [loaded, setLoaded] = useState(false);
+
+  const removeTicket = (ticket_id: string) => {
+    fetch(`/remove-ticket/${ticket_id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+  };
 
   const onClicker = () => {
     if (!showForm) return setShowForm(true);
@@ -14,20 +25,22 @@ export const CompanyTickets: FC = () => {
   const match = useRouteMatch<{ companyName: string; companyID: string }>(
     "/company-tickets/:companyName/:companyID?"
   );
+  const companyID = match?.params.companyID;
 
-  console.log(
-    "this is params ==> ",
-    match?.params.companyName,
-    match?.params.companyID
-  );
-
-  useEffect(() => {
-    fetch(`/users-company-tickets/${match?.params.companyID}`)
+  const fetchCompanyTickets = async () => {
+    await fetch(`/users-company-tickets/${companyID}`)
       .then(res => res.json())
       .then(data => setUserCompTickets(data));
-  });
+    setLoaded(true);
+  };
 
-  console.log("userCompTickets ==> ", userCompTickets);
+  useEffect(() => {
+    if (!loaded) fetchCompanyTickets();
+  }, [userCompTickets]);
+
+  if (!loaded) {
+    return <p>Loading company data...</p>;
+  }
 
   return (
     <div className="companylists">
@@ -38,10 +51,19 @@ export const CompanyTickets: FC = () => {
           </Grid.Row>
           {(userCompTickets || []).length > 0 ? (
             (userCompTickets || []).map((ticket: any) => (
-              <Card key={ticket.ticket_id} href={`/ticket/${ticket.ticket_id}`}>
+              <Card key={ticket.ticket_id}>
                 <Card.Content meta={`#${ticket.ticket_id}`} />
                 <Card.Content header={ticket.subject_line} />
                 <Card.Content description={ticket.description} />
+                <Card.Content style={{ padding: 0 }}>
+                  <TimerButton
+                    companyID={companyID}
+                    ticketID={ticket.ticket_id}
+                  />
+                </Card.Content>
+                <Button onClick={() => removeTicket(ticket.ticket_id)}>
+                  Remove
+                </Button>
               </Card>
             ))
           ) : (
@@ -63,7 +85,10 @@ export const CompanyTickets: FC = () => {
             <Icon color="black" name="plus" style={{ margin: "5px" }} />
           </Button>
           {showForm ? (
-            <TicketForm companyID={+(match?.params.companyID || 0)} />
+            <TicketForm
+              setShowForm={setShowForm}
+              companyID={+(match?.params.companyID || 0)}
+            />
           ) : (
             ""
           )}

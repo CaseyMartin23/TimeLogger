@@ -1,7 +1,6 @@
 import React from "react";
 import "../stylesheets/AppStyle.css";
 import { Card } from "semantic-ui-react";
-import { TimerButton } from "../components/TimerButton";
 
 export const Home: React.FC = () => {
   return (
@@ -31,8 +30,6 @@ export const Home: React.FC = () => {
             </Card.Meta>
           </Card.Content>
         </Card>
-
-        <TimerButton />
       </div>
     </div>
   );

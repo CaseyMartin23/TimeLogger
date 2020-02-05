@@ -3,27 +3,32 @@ import { Form, Label, Input, Button } from "semantic-ui-react";
 
 type Props = {
   companyID: number;
+  setShowForm: any;
 };
 
-export const TicketForm: React.FC<Props> = ({ companyID }) => {
+export const TicketForm: React.FC<Props> = ({ companyID, setShowForm }) => {
   const [ticketSub, setTicketSub] = useState<string>();
   const [ticketDescript, setTicketDescript] = useState<string>();
+  const [loading, setLoading] = useState(false);
 
-  const onSubmitter = (e: any) => {
+  const onSubmitter = async (e: any) => {
+    e.preventDefault();
+    setLoading(true);
     const ticketInfo = {
       company_id: companyID,
       subject_line: ticketSub,
       description: ticketDescript
     };
-    e.preventDefault();
-    fetch("/add-ticket", {
+    await fetch("/add-ticket", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify(ticketInfo)
     });
+    setLoading(false);
     console.log("This is the tickeinfo ==> ", ticketInfo);
+    setShowForm(false);
   };
 
   return (
@@ -48,7 +53,9 @@ export const TicketForm: React.FC<Props> = ({ companyID }) => {
           </Label>
         </Form.Field>
         <Form.Field>
-          <Button type="submit">Submit</Button>
+          <Button loading={loading} type="submit">
+            Submit
+          </Button>
         </Form.Field>
       </Form>
     </div>

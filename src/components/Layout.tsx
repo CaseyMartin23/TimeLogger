@@ -15,12 +15,14 @@ const Layout: FC<LayoutProps> = ({ children }) => {
   const [loaded, setLoaded] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
 
+  console.log("Im on layout ...");
+  console.log("loggedIn", loggedIn);
+
   const fetchUserData = async () => {
     setLoaded(false);
     const res = await fetch("/whoami");
     if (res.status === 200 || res.status === 302) {
       const json = await res.json();
-      console.log("This is json ==> ", json);
       setLoggedIN(json);
       if (json.UserRole === "" || !json.UserRole) {
         setOpen(true);

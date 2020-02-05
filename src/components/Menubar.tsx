@@ -46,7 +46,6 @@ export const Menubar: React.FC = () => {
               </Modal.Actions>
             </Modal>
           </Menu.Item>
-          w{" "}
         </Menu>
       </>
     </div>

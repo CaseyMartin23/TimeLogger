@@ -1,9 +1,14 @@
 import React, { FC, useState, useEffect } from "react";
 import { Form, Label, Input, Button } from "semantic-ui-react";
 
-export const CompanyForm: FC = () => {
+type Props = {
+  setShowForm: any;
+};
+
+export const CompanyForm: FC<Props> = ({ setShowForm }) => {
   const [newCompanyName, setNewCompanyName] = useState("");
   const [userID, setUserID] = useState(0);
+  const [loaded, setLoaded] = useState(false);
 
   const onSubmitter = (e: any) => {
     const companyInfo = {
@@ -18,13 +23,25 @@ export const CompanyForm: FC = () => {
       body: JSON.stringify(companyInfo)
     });
     console.log("company info ==> ", companyInfo);
+    setShowForm(false);
+  };
+
+  const getUser = async () => {
+    await fetch("/whoami")
+      .then(res => res.json())
+      .then(data => setUserID(data.user_id));
+    setLoaded(true);
   };
 
   useEffect(() => {
-    fetch("/whoami")
-      .then(res => res.json())
-      .then(data => setUserID(data.user_id));
-  });
+    if (!loaded) {
+      getUser();
+    }
+  }, [loaded]);
+
+  if (!loaded) {
+    return <p>Getting user info...</p>;
+  }
 
   return (
     <div>
