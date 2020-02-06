@@ -8,6 +8,8 @@ export const CompanyTickets: FC = () => {
   const [showForm, setShowForm] = useState<boolean>(false);
   const [userCompTickets, setUserCompTickets] = useState();
   const [loaded, setLoaded] = useState(false);
+  const [addedATicket, setAddedATicket] = useState(false);
+  const [clicked, setClicked] = useState(false);
 
   const removeTicket = (ticket_id: string) => {
     fetch(`/remove-ticket/${ticket_id}`, {
@@ -36,6 +38,10 @@ export const CompanyTickets: FC = () => {
 
   useEffect(() => {
     if (!loaded) fetchCompanyTickets();
+  }, [addedATicket]);
+
+  useEffect(() => {
+    fetchCompanyTickets();
   }, [userCompTickets]);
 
   if (!loaded) {
@@ -45,35 +51,54 @@ export const CompanyTickets: FC = () => {
   return (
     <div className="companylists">
       <Grid columns={3}>
-        <Grid.Column>
-          <Grid.Row>
-            <h2>{match?.params.companyName}</h2>
+        <Grid.Column width={14}>
+          <Grid.Row
+            textAlign="center"
+            centered={true}
+            style={{ paddingLeft: "50px", padding: "30px" }}
+          >
+            <h1
+              className="CompanyLabel"
+              style={{
+                textAlign: "center",
+                padding: "15px"
+              }}
+            >
+              Tickets for {match?.params.companyName}:
+            </h1>
           </Grid.Row>
-          {(userCompTickets || []).length > 0 ? (
-            (userCompTickets || []).map((ticket: any) => (
-              <Card key={ticket.ticket_id}>
-                <Card.Content meta={`#${ticket.ticket_id}`} />
-                <Card.Content header={ticket.subject_line} />
-                <Card.Content description={ticket.description} />
-                <Card.Content style={{ padding: 0 }}>
-                  <TimerButton
-                    companyID={companyID}
-                    ticketID={ticket.ticket_id}
-                  />
-                </Card.Content>
-                <Button onClick={() => removeTicket(ticket.ticket_id)}>
-                  Remove
-                </Button>
-              </Card>
-            ))
-          ) : (
-            <div style={{ margin: "10px" }}>
-              There's no tickets for this company ...
-            </div>
-          )}
+          <Grid columns={2}>
+            {(userCompTickets || []).length > 0 ? (
+              (userCompTickets || []).map((ticket: any) => (
+                <Grid.Column key={ticket.ticket_id} width={5}>
+                  <Card>
+                    <Card.Content meta={`#${ticket.ticket_id}`} />
+                    <Card.Content header={ticket.subject_line} />
+                    <Card.Content description={ticket.description} />
+                    <Card.Content style={{ margin: 0, padding: 0 }}>
+                      <TimerButton
+                        companyID={companyID}
+                        ticketID={ticket.ticket_id}
+                      />
+                    </Card.Content>
+                    <Button
+                      onClick={() => {
+                        removeTicket(ticket.ticket_id);
+                      }}
+                    >
+                      Remove
+                    </Button>
+                  </Card>
+                </Grid.Column>
+              ))
+            ) : (
+              <div style={{ margin: "10px" }}>
+                There's no tickets for this company ...
+              </div>
+            )}
+          </Grid>
         </Grid.Column>
-        <Grid.Column></Grid.Column>
-        <Grid.Column>
+        <Grid.Column width={2}>
           <Button
             onClick={onClicker}
             inverted
@@ -86,6 +111,7 @@ export const CompanyTickets: FC = () => {
           </Button>
           {showForm ? (
             <TicketForm
+              setAddedATicket={setAddedATicket}
               setShowForm={setShowForm}
               companyID={+(match?.params.companyID || 0)}
             />

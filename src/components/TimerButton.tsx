@@ -86,10 +86,10 @@ export const TimerButton: FC<Props> = ({ ticketID, companyID }) => {
     }
   }, [finish]);
 
-  if (!loaded) return <div>Loading ...</div>;
+  if (loading) return <div>Loading ...</div>;
 
   return (
-    <div className="companylists">
+    <div style={{ padding: "20px", paddingTop: "40px" }}>
       <Grid columns={2}>
         <Grid.Column style={{ padding: 0 }}>
           {!ticketTime ? (

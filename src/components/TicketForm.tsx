@@ -3,10 +3,15 @@ import { Form, Label, Input, Button } from "semantic-ui-react";
 
 type Props = {
   companyID: number;
-  setShowForm: any;
+  setShowForm(value: boolean): void;
+  setAddedATicket(value: boolean): void;
 };
 
-export const TicketForm: React.FC<Props> = ({ companyID, setShowForm }) => {
+export const TicketForm: React.FC<Props> = ({
+  companyID,
+  setShowForm,
+  setAddedATicket
+}) => {
   const [ticketSub, setTicketSub] = useState<string>();
   const [ticketDescript, setTicketDescript] = useState<string>();
   const [loading, setLoading] = useState(false);
@@ -29,6 +34,7 @@ export const TicketForm: React.FC<Props> = ({ companyID, setShowForm }) => {
     setLoading(false);
     console.log("This is the tickeinfo ==> ", ticketInfo);
     setShowForm(false);
+    setAddedATicket(true);
   };
 
   return (

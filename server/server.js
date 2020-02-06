@@ -111,16 +111,6 @@ app.put("/update-user-role/:role", (req, res) => {
     });
 });
 
-// <============= Ticket Info =============>
-// app.put("/ticket-info/:ticketInfo", (req, res) => {
-//   const ticketInfo = req.params.ticketInfo;
-
-//   knex("user_tickets").update({
-//     subject_line: ticketInfo.ticketSub,
-//     description: ticketInfo.ticketDescript
-//   });
-// });
-
 // <============= Company Creation on Database =============>
 app.post("/add-company", async (req, res) => {
   const companyInfo = req.body;

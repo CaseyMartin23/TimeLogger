@@ -58,6 +58,9 @@ export const Companies: React.FC = () => {
                 key={comp.company_id}
               >
                 <Card.Content textAlign="center" header={comp.company_name} />
+                <Card.Content textAlign="center">
+                  <Button>Remove</Button>
+                </Card.Content>
               </Card>
             )
           )}
