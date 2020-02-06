@@ -1,52 +1,55 @@
 import React, { useState, useEffect } from "react";
-import {
-  Button,
-  Form,
-  Grid,
-  Header,
-  Radio,
-  Message,
-  Segment,
-  Icon
-} from "semantic-ui-react";
+import { Button, Form, Grid, Header, Segment, Icon } from "semantic-ui-react";
 import { Redirect } from "react-router-dom";
 import "semantic-ui-css/semantic.min.css";
 
 export const Login: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [userRole, setUserRole] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [loaded, setLoaded] = useState(false);
 
-  const onRadioClicker = (currentValue: string) => {
-    setUserRole(currentValue);
-  };
+  console.log("Im on the login ...");
 
   const isUserLoggedIn = async () => {
-    setLoading(true);
-    fetch("/whoami")
-      .then(res => res.json())
-      .then(jsonRes => {
-        if (!jsonRes.LinkedinId) setIsLoggedIn(false);
-        if (jsonRes) setIsLoggedIn(true);
-      });
     setLoading(false);
+    console.log("isLoggedIn ===> ", isLoggedIn);
+    const res = await fetch("/whoami");
+    console.log("res ==> ", res);
+    if (res.status === 200 || res.status === 302) {
+      const json = await res.json();
+      console.log("after jsoned ...");
+      if (json.LinkedinId && json.LinkedinId.toString().length > 0) {
+        setIsLoggedIn(true);
+        setLoading(true);
+        return setLoaded(true);
+      }
+      console.log("Failed auth ...");
+      setIsLoggedIn(false);
+      setLoading(false);
+      return setLoaded(true);
+    }
+    console.log("all done ...");
+    setLoading(false);
+    return setLoaded(true);
   };
 
-  const postUserRole = () => {
-    fetch(`/user-role/${userRole}`);
-    console.log("This is the userRole ==> ", userRole);
-  };
+  // console.log("loading before ===>", loading);
+  // console.log("loaded before ==> ", loaded);
 
-  useEffect(isUserLoggedIn, []);
+  useEffect(() => {
+    if (!isLoggedIn) isUserLoggedIn();
+    console.log("loading after ===>", loading);
+    console.log("loaded after  ==> ", loaded);
+  }, []);
 
-  useEffect(postUserRole, [userRole]);
+  console.log("loading right after ===>", loading);
+  console.log("loaded right after  ==> ", loaded);
 
   if (loading) {
-    console.log("Im on the login page .....");
     return <div>Loading ...</div>;
   }
 
-  if (isLoggedIn) return <Redirect to="/Home" />;
+  if (isLoggedIn && !loading) return <Redirect to="/" />;
 
   return (
     <Grid centered={true} style={{ height: "100vh" }} verticalAlign="middle">
@@ -60,51 +63,12 @@ export const Login: React.FC = () => {
         </Header>
         <Segment placeholder>
           <Form>
-            <div className="userRole">
-              <Form.Field>Select your role:</Form.Field>
-              <Radio
-                radio
-                label="Freelancer"
-                name="radioGroup"
-                onClick={() => onRadioClicker("freelance")}
-                checked={userRole === "freelance"}
-              />
-              <Radio
-                radio
-                label="Developer"
-                name="radioGroup"
-                onClick={() => onRadioClicker("dev")}
-                checked={userRole === "dev"}
-              />
-              <Radio
-                radio
-                label="Project Manager"
-                name="radioGroup"
-                onClick={() => onRadioClicker("project_man")}
-                checked={userRole === "project_man"}
-              />
-              <Radio
-                radio
-                label="Account Manager"
-                name="radioGroup"
-                onClick={() => onRadioClicker("acc_man")}
-                checked={userRole === "acc_man"}
-              />
-              <Radio
-                radio
-                label="Admin"
-                name="radioGroup"
-                onClick={() => onRadioClicker("admin")}
-                checked={userRole === "admin"}
-              />
-            </div>
             <Button href="http://localhost:3005/auth/linkedin" color="linkedin">
               <Icon name="linkedin" />
               Login
             </Button>
           </Form>
         </Segment>
-        <Message></Message>
       </Grid.Column>
     </Grid>
   );

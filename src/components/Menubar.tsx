@@ -1,57 +1,52 @@
-import React from "react";
-// import { Nav, Navbar, Form, FormControl, Button } from "react-bootstrap/";
-import { Menu, Container, Dropdown, Image } from "semantic-ui-react";
+import React, { useState } from "react";
+import { Menu, Container, Button, Modal } from "semantic-ui-react";
+import Logo from "../assets/timelogger_logo.png";
+// import { Redirect, Link } from "react-router-dom";
 
 export const Menubar: React.FC = () => {
+  const [open, setOpen] = useState(false);
+
   return (
     <div>
       <>
         <Menu fixed="top" inverted color="black">
           <Container>
-            <Menu.Item as="a" header style={{ width: "250px" }}>
-              <Image
-                size="mini"
-                src="/logo.png"
-                style={{ marginRight: "50px" }}
+            <Menu.Item header style={{ width: "250px", padding: 0 }}>
+              <img
+                src={Logo}
+                alt="Timelogger logo"
+                style={{ width: "90px", height: "90px", padding: 0 }}
               />
-              Project Name
             </Menu.Item>
-            <Menu.Item as="a">Home</Menu.Item>
-
-            <Dropdown item simple text="Dropdown">
-              <Dropdown.Menu>
-                <Dropdown.Item>List Item</Dropdown.Item>
-                <Dropdown.Item>List Item</Dropdown.Item>
-                <Dropdown.Divider />
-                <Dropdown.Header>Header Item</Dropdown.Header>
-                <Dropdown.Item>
-                  <i className="dropdown icon" />
-                  <span className="text">Submenu</span>
-                  <Dropdown.Menu>
-                    <Dropdown.Item>List Item</Dropdown.Item>
-                    <Dropdown.Item>List Item</Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown.Item>
-                <Dropdown.Item>List Item</Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
           </Container>
+          <Menu.Item>
+            <Button inverted onClick={() => setOpen(true)}>
+              Log out
+            </Button>
+            <Modal
+              size="tiny"
+              open={open}
+              style={{ marginLeft: "30%", height: "250px" }}
+            >
+              <Modal.Header>Log out</Modal.Header>
+              <Modal.Content>
+                <p>Are you sure you want to log out?</p>
+              </Modal.Content>
+              <Modal.Actions>
+                <Button negative onClick={() => setOpen(false)}>
+                  No
+                </Button>
+                <Button
+                  positive
+                  icon="checkmark"
+                  labelPosition="right"
+                  content="Yes"
+                  href="http://localhost:3005/auth/logout"
+                />
+              </Modal.Actions>
+            </Modal>
+          </Menu.Item>
         </Menu>
-        {/* <Navbar bg="dark" variant="dark">
-          <Navbar.Brand href="#home">
-            <Icon circular name="time" color="blue" inverted size="small" />{" "}
-            TimeLogger
-          </Navbar.Brand>
-          <Nav className="mr-auto">
-            <Nav.Link href="#home">Home</Nav.Link>
-            <Nav.Link href="#features">Features</Nav.Link>
-            <Nav.Link href="#pricing">About</Nav.Link>
-          </Nav>
-          <Form inline>
-            <FormControl type="text" placeholder="Search" className="mr-sm-2" />
-            <Button variant="outline-info">Search</Button>
-          </Form>
-        </Navbar> */}
       </>
     </div>
   );

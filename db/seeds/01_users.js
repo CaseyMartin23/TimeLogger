@@ -10,14 +10,16 @@ exports.seed = function(knex) {
           Username: "John",
           Firstname: "oausfbh",
           Lastname: "daslifgh",
-          UserRole: "Dancer"
+          UserRole: "Dancer",
+          UserProfileImg: "ipzdcascvrfjbgnvnjsmv"
         },
         {
           LinkedinId: "linkedin-456",
           Username: "Jennefer",
           Firstname: "asdofuhfwqa",
           Lastname: "sdgkuh",
-          UserRole: "Yeeter"
+          UserRole: "Yeeter",
+          UserProfileImg: "ipdrfjbgnvnjsmv"
         }
       ]);
     });

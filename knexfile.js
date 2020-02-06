@@ -1,9 +1,13 @@
-const keys = require("./Keys/keys");
-
 module.exports = {
   development: {
     client: "pg",
-    connection: keys.postgresDB.db_URI,
+    connection: {
+      host: "localhost",
+      user: "postgres",
+      password: "",
+      database: "timelogger_db"
+    },
+
     migrations: {
       directory: __dirname + "/db/migrations"
     },
@@ -13,7 +17,12 @@ module.exports = {
   },
   production: {
     client: "pg",
-    connection: keys.postgresDB.db_URI,
+    connection: {
+      host: "localhost",
+      user: "postgres",
+      password: "",
+      database: "timelogger_db"
+    },
     migrations: {
       directory: __dirname + "/db/migrations"
     },
