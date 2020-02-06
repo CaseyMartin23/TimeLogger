@@ -36,3 +36,16 @@
     transform: rotate(360deg);
   }
 }
+
+.ui.radio.checkbox {
+  margin: 5px;
+}
+
+.userRole {
+  text-align: center;
+  margin: 20px;
+}
+
+.companylists {
+  margin-top: 100px !important;
+}

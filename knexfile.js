@@ -1,13 +1,13 @@
-const host = "localhost",
-  username = "postgres",
-  password = "admin",
-  port = "5432",
-  db = "timelogger_db";
-
 module.exports = {
   development: {
     client: "pg",
-    connection: `postgres://${username}:${password}@${host}:${port}/${db}`,
+    connection: {
+      host: "localhost",
+      user: "postgres",
+      password: "",
+      database: "timelogger_db"
+    },
+
     migrations: {
       directory: __dirname + "/db/migrations"
     },
@@ -17,7 +17,12 @@ module.exports = {
   },
   production: {
     client: "pg",
-    connection: process.env.DATABASE_URL,
+    connection: {
+      host: "localhost",
+      user: "postgres",
+      password: "",
+      database: "timelogger_db"
+    },
     migrations: {
       directory: __dirname + "/db/migrations"
     },

@@ -1,0 +1,23 @@
+.header {
+  width: 100%;
+}
+.AppStyle {
+  /* background-color: gray; */
+}
+
+.sidebar {
+  margin: 5px 15px;
+  padding: 5px;
+  float: left;
+}
+
+.companylists {
+  padding: 5px;
+  margin: 50px;
+}
+.addButton {
+  float: right;
+}
+.company_container {
+  margin-bottom: 25px;
+}
