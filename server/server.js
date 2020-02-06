@@ -136,6 +136,20 @@ app.get("/users-companies", async (req, res) => {
   res.send(companies);
 });
 
+// <============= Removing Companies =============>
+app.delete("/remove-company/:companyID", async (req, res) => {
+  const companyID = req.params.companyID;
+  console.log("companyID for Removal ==>", companyID);
+
+  await knex("companies")
+    .where({
+      company_id: companyID
+    })
+    .del();
+
+  res.send("Removed company successfully ...").end();
+});
+
 // <============= Ticket Creation on Database =============>
 app.post("/add-ticket", async (req, res) => {
   const ticketInfo = req.body;

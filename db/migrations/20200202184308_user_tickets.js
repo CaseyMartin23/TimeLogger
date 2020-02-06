@@ -1,18 +1,12 @@
 exports.up = function(knex) {
   return knex.schema.createTable("user_tickets", table => {
-    table.increments("ticket_id").notNullable();
-    table
-      .integer("user_id")
-      .unsigned()
-      .notNullable();
+    table.increments("ticket_id");
+    table.integer("user_id").unsigned();
     table
       .foreign("user_id")
       .references("user_id")
       .inTable("users");
-    table
-      .integer("company_id")
-      .unsigned()
-      .notNullable();
+    table.integer("company_id").unsigned();
     table
       .foreign("company_id")
       .references("company_id")

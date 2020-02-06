@@ -6,10 +6,22 @@ export const Companies: React.FC = () => {
   const [showForm, setShowForm] = useState(false);
   const [companies, setCompanies] = useState();
   const [loaded, setLoaded] = useState(false);
+  const [clicked, setClicked] = useState(false);
 
   const onClicker = () => {
     if (!showForm) return setShowForm(true);
     return setShowForm(false);
+  };
+
+  const removeCompany = async (companyID: number) => {
+    await fetch(`/remove-company/${companyID}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+    console.log("companyID ==> ", companyID);
+    setClicked(false);
   };
 
   const getCompanies = async () => {
@@ -21,10 +33,14 @@ export const Companies: React.FC = () => {
 
   useEffect(() => {
     getCompanies();
-  }, [companies]);
+  }, [showForm]);
+
+  useEffect(() => {
+    getCompanies();
+  }, [clicked]);
 
   if (!loaded) {
-    return <p>Loading companies...</p>;
+    return <p className="companylists">Loading companies...</p>;
   }
 
   return (
@@ -53,13 +69,22 @@ export const Companies: React.FC = () => {
               company_id: number;
               user_id: number;
             }) => (
-              <Card
-                href={`/company-tickets/${comp.company_name}/${comp.company_id}`}
-                key={comp.company_id}
-              >
-                <Card.Content textAlign="center" header={comp.company_name} />
+              <Card key={comp.company_id}>
+                <Card.Content
+                  href={`/company-tickets/${comp.company_name}/${comp.company_id}`}
+                  textAlign="center"
+                  header={comp.company_name}
+                />
                 <Card.Content textAlign="center">
-                  <Button>Remove</Button>
+                  <Button
+                    onClick={() => {
+                      setClicked(true);
+                      console.log("Clicked ==> ", clicked);
+                      removeCompany(comp.company_id);
+                    }}
+                  >
+                    Remove
+                  </Button>
                 </Card.Content>
               </Card>
             )
