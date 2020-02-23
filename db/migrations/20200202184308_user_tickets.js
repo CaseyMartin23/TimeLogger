@@ -19,7 +19,6 @@ exports.up = function(knex) {
       .inTable("companies");
     table.string("subject_line");
     table.string("description", [20000]);
-    table.string("ticket_time");
   });
 };
 
