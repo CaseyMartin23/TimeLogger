@@ -241,13 +241,16 @@ app.put("/pause-ticket-timer", async (req, res) => {
     start.start_time
   );
 
+  const total = await knex("ticket_times")
+    .first("total_time")
+    .where({ ticket_id: ticket });
+
   await knex("ticket_times")
     .where({ ticket_id: ticketInfo.ticket_id })
     .update({
-      elapsed_time: diffInSecs
+      elapsed_time: diffInSecs,
+      total_time: knex.raw("? + ?", ["total_time", diffInSecs])
     });
-
-  // const total = 0
 
   await knex("ticket_times").where({ ticket_id: ticketInfo.ticket_id });
 
