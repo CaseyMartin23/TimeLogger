@@ -124,6 +124,17 @@ app.post("/add-company", async (req, res) => {
   res.send("Created Company successfully !").end();
 });
 
+// <============= Remove Company =============>
+app.delete("/remove-company/:compID", async (req, res) => {
+  const compID = req.params.compID;
+
+  await knex("companies")
+    .where({ company_id: compID })
+    .del();
+
+  res.send("Removed Company successfully ...").end();
+});
+
 // <============= Getting Companies =============>
 app.get("/users-companies", async (req, res) => {
   const companies = await knex("companies")

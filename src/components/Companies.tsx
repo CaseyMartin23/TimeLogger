@@ -12,8 +12,17 @@ export const Companies: React.FC = () => {
     return setShowForm(false);
   };
 
+  const removeCompany = async (compID: number) => {
+    await fetch(`/remove-company/${compID}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+  };
+
   const getCompanies = async () => {
-    await fetch("users-companies")
+    await fetch("/users-companies")
       .then(res => res.json())
       .then(data => setCompanies(data));
     setLoaded(true);
@@ -53,13 +62,16 @@ export const Companies: React.FC = () => {
               company_id: number;
               user_id: number;
             }) => (
-              <Card
-                href={`/company-tickets/${comp.company_name}/${comp.company_id}`}
-                key={comp.company_id}
-              >
-                <Card.Content textAlign="center" header={comp.company_name} />
+              <Card key={comp.company_id}>
+                <Card.Content
+                  textAlign="center"
+                  header={comp.company_name}
+                  href={`/company-tickets/${comp.company_name}/${comp.company_id}`}
+                />
                 <Card.Content textAlign="center">
-                  <Button>Remove</Button>
+                  <Button onClick={() => removeCompany(comp.company_id)}>
+                    Remove
+                  </Button>
                 </Card.Content>
               </Card>
             )
