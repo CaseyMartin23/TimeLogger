@@ -1,14 +1,11 @@
 exports.up = function(knex) {
   return knex.schema.createTable("ticket_times", table => {
     table.integer("ticket_id").notNullable();
-    table
-      .foreign("ticket_id")
-      .references("ticket_id")
-      .inTable("user_tickets");
-    table.timestamp("start_time");
-    table.timestamp("pause_time");
+    table.string("ticket_state");
+    table.timestamp("start_time", { useTz: false });
+    table.timestamp("pause_time", { useTz: false });
     table.integer("elapsed_time");
-    table.timestamp("completed_time");
+    table.timestamp("completed_time", { useTz: false });
     table.integer("total_time");
   });
 };

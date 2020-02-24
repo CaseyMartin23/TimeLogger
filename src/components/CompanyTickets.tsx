@@ -9,15 +9,16 @@ export const CompanyTickets: FC = () => {
   const [userCompTickets, setUserCompTickets] = useState();
   const [loaded, setLoaded] = useState(false);
   const [addedATicket, setAddedATicket] = useState(false);
-  const [clicked, setClicked] = useState(false);
 
-  const removeTicket = (ticket_id: string) => {
-    fetch(`/remove-ticket/${ticket_id}`, {
+  const removeTicket = async (ticket_id: string) => {
+    setAddedATicket(false);
+    await fetch(`/remove-ticket/${ticket_id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json"
       }
     });
+    setAddedATicket(true);
   };
 
   const onClicker = () => {
@@ -37,12 +38,8 @@ export const CompanyTickets: FC = () => {
   };
 
   useEffect(() => {
-    if (!loaded) fetchCompanyTickets();
-  }, [addedATicket]);
-
-  useEffect(() => {
     fetchCompanyTickets();
-  }, [userCompTickets]);
+  }, [addedATicket]);
 
   if (!loaded) {
     return <p>Loading company data...</p>;
@@ -72,11 +69,14 @@ export const CompanyTickets: FC = () => {
               (userCompTickets || []).map((ticket: any) => (
                 <Grid.Column key={ticket.ticket_id} width={5}>
                   <Card>
-                    <Card.Content meta={`#${ticket.ticket_id}`} />
+                    <Card.Content
+                      meta={`#${ticket.ticket_id} (${ticket.ticket_state})`}
+                    />
                     <Card.Content header={ticket.subject_line} />
                     <Card.Content description={ticket.description} />
                     <Card.Content style={{ margin: 0, padding: 0 }}>
                       <TimerButton
+                        ticketState={ticket.ticket_state}
                         companyID={companyID}
                         ticketID={ticket.ticket_id}
                       />

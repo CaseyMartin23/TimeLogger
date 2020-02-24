@@ -6,6 +6,7 @@ export const Companies: React.FC = () => {
   const [showForm, setShowForm] = useState(false);
   const [companies, setCompanies] = useState();
   const [loaded, setLoaded] = useState(false);
+  const [clicked, setClicked] = useState(false);
 
   const onClicker = () => {
     if (!showForm) return setShowForm(true);
@@ -13,12 +14,14 @@ export const Companies: React.FC = () => {
   };
 
   const removeCompany = async (compID: number) => {
+    setClicked(false);
     await fetch(`/remove-company/${compID}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json"
       }
     });
+    setClicked(true);
   };
 
   const getCompanies = async () => {
@@ -30,7 +33,7 @@ export const Companies: React.FC = () => {
 
   useEffect(() => {
     getCompanies();
-  }, [companies]);
+  }, [clicked]);
 
   if (!loaded) {
     return <p>Loading companies...</p>;
@@ -53,7 +56,11 @@ export const Companies: React.FC = () => {
               <Icon name="plus" color="black" style={{ margin: "5px" }} />
             </Button>
           </h3>
-          {showForm ? <CompanyForm setShowForm={setShowForm} /> : ""}
+          {showForm ? (
+            <CompanyForm setClicked={setClicked} setShowForm={setShowForm} />
+          ) : (
+            ""
+          )}
         </Grid.Column>
         <Grid.Column>
           {(companies || []).map(

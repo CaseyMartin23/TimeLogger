@@ -18,6 +18,7 @@ export const TicketForm: React.FC<Props> = ({
 
   const onSubmitter = async (e: any) => {
     e.preventDefault();
+    setAddedATicket(false);
     setLoading(true);
     const ticketInfo = {
       company_id: companyID,

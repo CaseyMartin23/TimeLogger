@@ -3,19 +3,21 @@ import { Form, Label, Input, Button } from "semantic-ui-react";
 
 type Props = {
   setShowForm: any;
+  setClicked: any;
 };
 
-export const CompanyForm: FC<Props> = ({ setShowForm }) => {
+export const CompanyForm: FC<Props> = ({ setShowForm, setClicked }) => {
   const [newCompanyName, setNewCompanyName] = useState("");
   const [userID, setUserID] = useState(0);
   const [loaded, setLoaded] = useState(false);
 
-  const onSubmitter = (e: any) => {
+  const onSubmitter = async (e: any) => {
+    setClicked(false);
     const companyInfo = {
       user_id: userID,
       company_name: newCompanyName
     };
-    fetch("add-company/", {
+    await fetch("add-company/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -24,6 +26,7 @@ export const CompanyForm: FC<Props> = ({ setShowForm }) => {
     });
     console.log("company info ==> ", companyInfo);
     setShowForm(false);
+    setClicked(true);
   };
 
   const getUser = async () => {

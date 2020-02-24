@@ -1,11 +1,13 @@
 const express = require("express");
-const app = express();
 const bodyParser = require("body-parser");
 const passport = require("passport");
 const cookieSession = require("cookie-session");
-const LinkedinStrategy = require("passport-linkedin-oauth2").Strategy;
+const Linkedin = require("passport-linkedin-oauth2");
 const keys = require("../Keys/keys");
 const knex = require("../db/knex");
+const dateFns = require("date-fns");
+const LinkedinStrategy = Linkedin.Strategy;
+const app = express();
 const PORT = process.env.PORT || 3005;
 
 console.log("Server has started ....");
@@ -190,31 +192,93 @@ app.get("/selected-ticket/:ticketID", async (req, res) => {
 });
 
 // <============= User Ticket Time Logs =============>
-app.put("/add-ticket-time", (req, res) => {
-  const ticketTime = req.body;
-  console.log("ticketTime ==> ", ticketTime);
+app.post("/start-ticket-timer", async (req, res) => {
+  const ticketInfo = req.body;
+  console.log("ticketInfo ==> ", ticketInfo);
 
-  knex("user_tickets")
-    .update({ ticket_time: ticketTime.ticket_time })
-    .where({ ticket_id: ticketTime.ticket_id })
-    .returning()
-    .then(res => console.log("res addTT ==> ", res));
+  await knex("ticket_times")
+    .insert({
+      ticket_id: ticketInfo.ticket_id,
+      ticket_state: ticketInfo.timerState,
+      start_time: knex.raw("LOCALTIMESTAMP")
+    })
+    .where({ ticket_id: ticketInfo.ticket_id });
+
+  await knex("user_tickets")
+    .update({ ticket_state: ticketInfo.timerState })
+    .where({ ticket_id: ticketInfo.ticket_id });
+
+  res.send().end();
 });
 
-app.get("/get-ticket-time/:companyID/:ticketID", async (req, res) => {
-  const ticketCompId = req.params.companyID;
-  const ticketID = req.params.ticketID;
-  console.log("ticketCompId & ticketID ==> ", ticketCompId, ticketID);
+app.put("/start-ticket-timer", async (req, res) => {
+  console.log("i just updated ...!");
+});
 
-  const ticketTime = await knex("user_tickets")
+app.put("/pause-ticket-timer", async (req, res) => {
+  const ticketInfo = req.body;
+  console.log("ticketInfo ==> ", ticketInfo);
+
+  await knex("ticket_times")
+    .where({ ticket_id: ticketInfo.ticket_id })
+    .update({
+      pause_time: knex.raw("LOCALTIMESTAMP"),
+      ticket_state: ticketInfo.timerState
+    });
+
+  const start = await knex("ticket_times")
+    .first("start_time")
+    .where({ ticket_id: ticketInfo.ticket_id })
+    .then(res => res);
+
+  const pause = await knex("ticket_times")
+    .first("pause_time")
+    .where({ ticket_id: ticketInfo.ticket_id })
+    .then(res => res);
+
+  const diffInSecs = dateFns.differenceInSeconds(
+    pause.pause_time,
+    start.start_time
+  );
+
+  await knex("ticket_times")
+    .where({ ticket_id: ticketInfo.ticket_id })
+    .update({
+      elapsed_time: diffInSecs
+    });
+
+  // const total = 0
+
+  await knex("ticket_times").where({ ticket_id: ticketInfo.ticket_id });
+
+  res.send().end();
+});
+
+app.post("/stop-ticket-timer", async (req, res) => {
+  const ticketInfo = req.body;
+  console.log("ticketInfo ==> ", ticketInfo);
+
+  await knex("user_tickets")
+    .where({ ticket_id: ticketInfo.ticket_id })
+    .update({ ticket_state: ticketInfo.timerState });
+
+  res.send().end();
+});
+
+app.get("/get-ticket-times/:ticketID", async (req, res) => {
+  const ticketID = req.params.ticketID;
+  console.log("ticketID ==> ", ticketID);
+
+  const ticketTime = await knex("ticket_times")
     .select("*")
-    .where({ company_id: ticketCompId, ticket_id: ticketID })
+    .where({ ticket_id: ticketID })
     .returning()
     .then(res => res);
 
   res.send(ticketTime);
 });
 
+// <============= Remove Ticket =============>
 app.delete("/remove-ticket/:ticket_id", async (req, res) => {
   const ticket_id = req.params.ticket_id;
   console.log("ticket id ==> ", ticket_id);
