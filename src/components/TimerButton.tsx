@@ -26,8 +26,7 @@ export const TimerButton: FC<Props> = ({
 
   const startTimer = async () => {
     setClicked(false);
-    if (ticketState === "Completed") return;
-    if (ticketState === "In Progress") return;
+    if (ticketState === "Completed" || ticketState === "In Progress") return;
     if (ticketTimes.length > 0) {
       await fetch(`/start-ticket-timer`, {
         method: "PUT",
@@ -56,8 +55,12 @@ export const TimerButton: FC<Props> = ({
 
   const pauseTimer = async () => {
     setClicked(false);
-    if (ticketState === "Completed") return;
-    if (ticketState === "Paused") return;
+    if (
+      ticketState === "Completed" ||
+      ticketState === "Paused" ||
+      ticketState === "Open"
+    )
+      return;
     await fetch("/pause-ticket-timer", {
       method: "PUT",
       headers: {
@@ -73,7 +76,7 @@ export const TimerButton: FC<Props> = ({
 
   const stopTimer = async () => {
     setClicked(false);
-    if (ticketState === "Completed") return;
+    if (ticketState === "Completed" || ticketState === "Open") return;
 
     await fetch("/stop-ticket-timer", {
       method: "PUT",
