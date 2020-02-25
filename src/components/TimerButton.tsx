@@ -2,6 +2,8 @@ import React, { FC, useState, useEffect } from "react";
 import { Button } from "semantic-ui-react";
 
 type Props = {
+  clicked: boolean;
+  setClicked(value: boolean): void;
   ticketState: string;
   ticketID: number;
   companyID: string | undefined;
@@ -10,10 +12,11 @@ type Props = {
 export const TimerButton: FC<Props> = ({
   ticketID,
   companyID,
-  ticketState
+  ticketState,
+  clicked,
+  setClicked
 }) => {
   const [ticketTimes, setTicketTimes] = useState();
-  const [clicked, setClicked] = useState(false);
 
   const getTicketTimes = async () => {
     await fetch(`/get-ticket-times/${ticketID}`)
@@ -54,6 +57,7 @@ export const TimerButton: FC<Props> = ({
   const pauseTimer = async () => {
     setClicked(false);
     if (ticketState === "Completed") return;
+    if (ticketState === "Paused") return;
     await fetch("/pause-ticket-timer", {
       method: "PUT",
       headers: {
@@ -67,7 +71,22 @@ export const TimerButton: FC<Props> = ({
     setClicked(true);
   };
 
-  const stopTimer = async () => {};
+  const stopTimer = async () => {
+    setClicked(false);
+    if (ticketState === "Completed") return;
+
+    await fetch("/stop-ticket-timer", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        ticket_id: ticketID,
+        timerState: "Completed"
+      })
+    });
+    setClicked(true);
+  };
 
   useEffect(() => {
     getTicketTimes();
@@ -79,7 +98,7 @@ export const TimerButton: FC<Props> = ({
     <div style={{ padding: "20px", paddingTop: "40px" }}>
       <Button onClick={startTimer}>Start</Button>
       <Button onClick={pauseTimer}>Pause</Button>
-      <Button onClick={() => {}}>Done</Button>
+      <Button onClick={stopTimer}>Done</Button>
     </div>
   );
 };

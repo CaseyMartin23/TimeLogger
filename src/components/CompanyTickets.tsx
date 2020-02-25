@@ -9,6 +9,7 @@ export const CompanyTickets: FC = () => {
   const [userCompTickets, setUserCompTickets] = useState();
   const [loaded, setLoaded] = useState(false);
   const [addedATicket, setAddedATicket] = useState(false);
+  const [clicked, setClicked] = useState(false);
 
   const removeTicket = async (ticket_id: string) => {
     setAddedATicket(false);
@@ -39,7 +40,7 @@ export const CompanyTickets: FC = () => {
 
   useEffect(() => {
     fetchCompanyTickets();
-  }, [addedATicket]);
+  }, [addedATicket, clicked]);
 
   if (!loaded) {
     return <p>Loading company data...</p>;
@@ -76,6 +77,8 @@ export const CompanyTickets: FC = () => {
                     <Card.Content description={ticket.description} />
                     <Card.Content style={{ margin: 0, padding: 0 }}>
                       <TimerButton
+                        clicked={clicked}
+                        setClicked={setClicked}
                         ticketState={ticket.ticket_state}
                         companyID={companyID}
                         ticketID={ticket.ticket_id}

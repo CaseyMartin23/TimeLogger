@@ -213,6 +213,20 @@ app.post("/start-ticket-timer", async (req, res) => {
 
 app.put("/start-ticket-timer", async (req, res) => {
   console.log("i just updated ...!");
+  const ticketInfo = req.body;
+
+  await knex("ticket_times")
+    .where({ ticket_id: ticketInfo.ticket_id })
+    .update({
+      start_time: knex.raw("LOCALTIMESTAMP"),
+      ticket_state: ticketInfo.timerState
+    });
+
+  await knex("user_tickets")
+    .where({ ticket_id: ticketInfo.ticket_id })
+    .update({ ticket_state: ticketInfo.timerState });
+
+  res.send().end();
 });
 
 app.put("/pause-ticket-timer", async (req, res) => {
@@ -241,29 +255,88 @@ app.put("/pause-ticket-timer", async (req, res) => {
     start.start_time
   );
 
-  const total = await knex("ticket_times")
-    .first("total_time")
-    .where({ ticket_id: ticket });
-
   await knex("ticket_times")
     .where({ ticket_id: ticketInfo.ticket_id })
     .update({
       elapsed_time: diffInSecs,
-      total_time: knex.raw("? + ?", ["total_time", diffInSecs])
+      total_time: knex.raw("?? + ??", ["total_time", diffInSecs])
     });
-
-  await knex("ticket_times").where({ ticket_id: ticketInfo.ticket_id });
-
-  res.send().end();
-});
-
-app.post("/stop-ticket-timer", async (req, res) => {
-  const ticketInfo = req.body;
-  console.log("ticketInfo ==> ", ticketInfo);
 
   await knex("user_tickets")
     .where({ ticket_id: ticketInfo.ticket_id })
     .update({ ticket_state: ticketInfo.timerState });
+
+  res.send().end();
+});
+
+app.put("/stop-ticket-timer", async (req, res) => {
+  const ticketInfo = req.body;
+  console.log("ticketInfo ==> ", ticketInfo);
+
+  const ticketState = await knex("user_tickets")
+    .first("ticket_state")
+    .where({ ticket_id: ticketInfo.ticket_id })
+    .then(res => res);
+
+  console.log("ticket state ==> ", ticketState);
+
+  await knex("ticket_times")
+    .where({ ticket_id: ticketInfo.ticket_id })
+    .update({
+      ticket_state: ticketInfo.timerState,
+      completed_time: knex.raw("LOCALTIMESTAMP")
+    });
+
+  const completed = await knex("ticket_times")
+    .first("completed_time")
+    .where({ ticket_id: ticketInfo.ticket_id })
+    .then(res => res);
+
+  if (ticketState.ticket_state === "In Progress") {
+    const start = await knex("ticket_times")
+      .first("start_time")
+      .where({ ticket_id: ticketInfo.ticket_id })
+      .then(res => res);
+
+    const diffOfStart = dateFns.differenceInSeconds(
+      completed.completed_time,
+      start.start_time
+    );
+
+    await knex("user_tickets")
+      .where({ ticket_id: ticketInfo.ticket_id })
+      .update({ ticket_state: ticketInfo.timerState });
+
+    return await knex("ticket_times")
+      .where({ ticket_id: ticketInfo.ticket_id })
+      .update({
+        elapsed_time: diffOfStart,
+        total_time: knex.raw("?? + ??", ["total_time", diffOfStart])
+      });
+  }
+
+  if (ticketState.ticket_state === "Paused") {
+    const pause = await knex("ticket_times")
+      .first("pause_time")
+      .where({ ticket_id: ticketInfo.ticket_id })
+      .then(res => res);
+
+    const diffOfPause = dateFns.differenceInSeconds(
+      completed.completed_time,
+      pause.pause_time
+    );
+
+    await knex("user_tickets")
+      .where({ ticket_id: ticketInfo.ticket_id })
+      .update({ ticket_state: ticketInfo.timerState });
+
+    return await knex("ticket_times")
+      .where({ ticket_id: ticketInfo.ticket_id })
+      .update({
+        elapsed_time: diffOfPause,
+        total_time: knex.raw("?? + ??", ["total_time", diffOfPause])
+      });
+  }
 
   res.send().end();
 });
