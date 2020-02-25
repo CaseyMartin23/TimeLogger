@@ -4,9 +4,9 @@ exports.up = function(knex) {
     table.string("ticket_state");
     table.timestamp("start_time", { useTz: false });
     table.timestamp("pause_time", { useTz: false });
+    table.timestamp("completed_time", { useTz: false });
     table.integer("elapsed_time");
     table.integer("total_time").defaultTo(0);
-    table.timestamp("completed_time", { useTz: false });
   });
 };
 

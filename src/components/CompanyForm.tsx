@@ -12,6 +12,8 @@ export const CompanyForm: FC<Props> = ({ setShowForm, setClicked }) => {
   const [loaded, setLoaded] = useState(false);
 
   const onSubmitter = async (e: any) => {
+    if (newCompanyName === "") return;
+
     setClicked(false);
     const companyInfo = {
       user_id: userID,

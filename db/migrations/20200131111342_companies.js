@@ -10,6 +10,10 @@ exports.up = function(knex) {
       .references("user_id")
       .inTable("users");
     table.string("company_name", [100]);
+    table
+      .timestamp("date_create", { useTz: false })
+      .defaultTo(knex.fn.now())
+      .notNullable();
   });
 };
 

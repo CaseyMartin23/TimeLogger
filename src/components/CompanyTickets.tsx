@@ -75,6 +75,19 @@ export const CompanyTickets: FC = () => {
                     />
                     <Card.Content header={ticket.subject_line} />
                     <Card.Content description={ticket.description} />
+                    <Card.Content
+                      description={`${
+                        ticket.ticket_state === "Paused"
+                          ? "Current"
+                          : ticket.ticket_state === "Completed"
+                          ? "Total"
+                          : "Last"
+                      } time: ${
+                        ticket.ticket_time === null
+                          ? "There's no time for this ticket ..."
+                          : ticket.ticket_time
+                      }`}
+                    />
                     <Card.Content style={{ margin: 0, padding: 0 }}>
                       <TimerButton
                         clicked={clicked}

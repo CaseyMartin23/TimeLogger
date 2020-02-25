@@ -14,7 +14,7 @@ interface Props {
 export const VerticalSidebar: React.FC<Props> = props => {
   return (
     <div className="sidebar">
-      <Menu fixed="left" vertical>
+      <Menu compact={true} vertical>
         <Menu.Item>
           <Header as="h4">
             <Image circular src={props.UserInfo.UserProfileImg} size="mini" />
@@ -22,19 +22,22 @@ export const VerticalSidebar: React.FC<Props> = props => {
             {props.UserInfo.UserRole || "Unassigned"}
           </Header>
         </Menu.Item>
-        <Menu.Item>
-          <h4>Dashboard</h4>
+        <Menu.Item as="a" href="/hub">
+          <h4>Hub</h4>
         </Menu.Item>
 
         <Menu.Item as="a" href="/">
-          Home
+          <h6>Home</h6>
         </Menu.Item>
 
         <Menu.Item as="a" href="/companies">
-          Companies
+          <h6>Companies</h6>
         </Menu.Item>
         <Menu.Item as="a" href="/tickets">
-          Tickets
+          <h6>Tickets</h6>
+        </Menu.Item>
+        <Menu.Item as="a" href="/summary">
+          <h6>Summary</h6>
         </Menu.Item>
       </Menu>
     </div>

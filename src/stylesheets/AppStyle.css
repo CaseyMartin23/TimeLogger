@@ -1,14 +1,11 @@
 .header {
   width: 100%;
 }
-.AppStyle {
-  /* background-color: gray; */
-}
 
 .sidebar {
-  margin: 5px 15px;
-  padding: 5px;
-  float: left;
+  margin-top: 38%;
+  margin-left: 8%;
+  position: absolute;
 }
 
 .companylists {

@@ -20,6 +20,11 @@ exports.up = function(knex) {
     table.string("subject_line");
     table.string("description", [20000]);
     table.string("ticket_state").defaultTo("Open");
+    table.integer("ticket_time");
+    table
+      .timestamp("date_create", { useTz: false })
+      .defaultTo(knex.fn.now())
+      .notNullable();
   });
 };
 

@@ -200,7 +200,7 @@ app.post("/start-ticket-timer", async (req, res) => {
     .insert({
       ticket_id: ticketInfo.ticket_id,
       ticket_state: ticketInfo.timerState,
-      start_time: knex.raw("LOCALTIMESTAMP")
+      start_time: knex.raw("NOW()")
     })
     .where({ ticket_id: ticketInfo.ticket_id });
 
@@ -218,7 +218,7 @@ app.put("/start-ticket-timer", async (req, res) => {
   await knex("ticket_times")
     .where({ ticket_id: ticketInfo.ticket_id })
     .update({
-      start_time: knex.raw("LOCALTIMESTAMP"),
+      start_time: knex.raw("NOW()"),
       ticket_state: ticketInfo.timerState
     });
 
@@ -236,7 +236,7 @@ app.put("/pause-ticket-timer", async (req, res) => {
   await knex("ticket_times")
     .where({ ticket_id: ticketInfo.ticket_id })
     .update({
-      pause_time: knex.raw("LOCALTIMESTAMP"),
+      pause_time: knex.raw("NOW()"),
       ticket_state: ticketInfo.timerState
     });
 
@@ -262,9 +262,18 @@ app.put("/pause-ticket-timer", async (req, res) => {
       total_time: knex.raw("?? + ??", ["total_time", diffInSecs])
     });
 
+  const ticketTime = await knex("ticket_times")
+    .first("total_time")
+    .where({ ticket_id: ticketInfo.ticket_id });
+
+  console.log("ticketTime ==> ", ticketTime);
+
   await knex("user_tickets")
     .where({ ticket_id: ticketInfo.ticket_id })
-    .update({ ticket_state: ticketInfo.timerState });
+    .update({
+      ticket_state: ticketInfo.timerState,
+      ticket_time: ticketTime.total_time
+    });
 
   res.send().end();
 });
@@ -284,7 +293,7 @@ app.put("/stop-ticket-timer", async (req, res) => {
     .where({ ticket_id: ticketInfo.ticket_id })
     .update({
       ticket_state: ticketInfo.timerState,
-      completed_time: knex.raw("LOCALTIMESTAMP")
+      completed_time: knex.raw("NOW()")
     });
 
   const completed = await knex("ticket_times")
@@ -337,6 +346,17 @@ app.put("/stop-ticket-timer", async (req, res) => {
         total_time: knex.raw("?? + ??", ["total_time", diffOfPause])
       });
   }
+
+  const ticketTime = await knex("ticket_times")
+    .first("total_time")
+    .where({ ticket_id: ticketInfo.ticket_id });
+
+  await knex("user_tickets")
+    .where({ ticket_id: ticketInfo.ticket_id })
+    .update({
+      ticket_state: ticketInfo.timerState,
+      ticket_time: ticketTime.total_time
+    });
 
   res.send().end();
 });
