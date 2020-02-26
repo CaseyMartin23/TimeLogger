@@ -7,7 +7,6 @@ module.exports = {
       password: "",
       database: "timelogger_db"
     },
-
     migrations: {
       directory: __dirname + "/db/migrations"
     },

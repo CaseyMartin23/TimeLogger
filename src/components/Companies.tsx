@@ -52,7 +52,7 @@ export const Companies: React.FC = () => {
               size="small"
               style={{ padding: "10px", margin: "5px" }}
             >
-              Add a company
+              Create a new company
               <Icon name="plus" color="black" style={{ margin: "5px" }} />
             </Button>
           </h3>

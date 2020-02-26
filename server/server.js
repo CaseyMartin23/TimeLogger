@@ -386,6 +386,28 @@ app.delete("/remove-ticket/:ticket_id", async (req, res) => {
   res.send("Removed ticket successfully ...").end();
 });
 
+// <============= Get all data from times =============>
+app.get("/get-timelogged-data/:sort", async (req, res) => {
+  const sorter = req.params.sort;
+  console.log("sorter ===> ", sorter);
+  const userTimeLogData = await knex("user_tickets")
+    .select(
+      "company_id",
+      "users.Username",
+      "ticket_id",
+      "subject_line",
+      "description",
+      "ticket_state",
+      "ticket_time",
+      "user_tickets.date_create"
+    )
+    .join("users", "user_tickets.user_id", "=", "users.user_id")
+    .where({ "user_tickets.user_id": req.session.passport.user.user_id });
+  console.log("userTimeLogData ==> ", userTimeLogData);
+
+  res.send(userTimeLogData);
+});
+
 // <============= Serialization/Deserialization =============>
 passport.serializeUser((user, done) => {
   done(null, user);

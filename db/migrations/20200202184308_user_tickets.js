@@ -22,8 +22,8 @@ exports.up = function(knex) {
     table.string("ticket_state").defaultTo("Open");
     table.integer("ticket_time");
     table
-      .timestamp("date_create", { useTz: false })
-      .defaultTo(knex.fn.now())
+      .timestamp("date_create")
+      .defaultTo(knex.raw("NOW()"))
       .notNullable();
   });
 };

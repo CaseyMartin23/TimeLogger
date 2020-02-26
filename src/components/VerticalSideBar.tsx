@@ -22,12 +22,8 @@ export const VerticalSidebar: React.FC<Props> = props => {
             {props.UserInfo.UserRole || "Unassigned"}
           </Header>
         </Menu.Item>
-        <Menu.Item as="a" href="/hub">
-          <h4>Hub</h4>
-        </Menu.Item>
-
         <Menu.Item as="a" href="/">
-          <h6>Home</h6>
+          <h4>Home</h4>
         </Menu.Item>
 
         <Menu.Item as="a" href="/companies">
@@ -35,6 +31,9 @@ export const VerticalSidebar: React.FC<Props> = props => {
         </Menu.Item>
         <Menu.Item as="a" href="/tickets">
           <h6>Tickets</h6>
+        </Menu.Item>
+        <Menu.Item as="a" href="/hub">
+          <h6>Hub</h6>
         </Menu.Item>
         <Menu.Item as="a" href="/summary">
           <h6>Summary</h6>
