@@ -3,20 +3,17 @@ exports.up = function(knex) {
     table.increments("ticket_id").notNullable();
     table
       .integer("user_id")
-      .unsigned()
-      .notNullable();
-    table
-      .foreign("user_id")
+      .notNullable()
       .references("user_id")
-      .inTable("users");
+      .inTable("users")
+      .notNullable();
     table
       .integer("company_id")
-      .unsigned()
-      .notNullable();
-    table
-      .foreign("company_id")
+      .notNullable()
       .references("company_id")
-      .inTable("companies");
+      .inTable("companies")
+      .notNullable();
+    table.integer("project_id").notNullable();
     table.string("subject_line");
     table.string("description", [20000]);
     table.string("ticket_state").defaultTo("Open");

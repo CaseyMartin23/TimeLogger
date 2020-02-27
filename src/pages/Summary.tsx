@@ -1,5 +1,13 @@
 import React, { useState, useEffect, SetStateAction } from "react";
-import { Segment, Dropdown, Table, Grid, Search } from "semantic-ui-react";
+import {
+  Segment,
+  Dropdown,
+  Table,
+  Grid,
+  Search,
+  Menu,
+  Icon
+} from "semantic-ui-react";
 
 type TimeLog = {
   company_id: number;
@@ -13,42 +21,37 @@ type TimeLog = {
 };
 
 export const Summary: React.FC = () => {
-  const [sort, setSort] = useState<any>("month");
   const [timeLogData, setTimeLogData] = useState([] || undefined);
   const [loaded, setLoaded] = useState(false);
 
-  const dateOptions = [
-    { key: 1, text: "today", value: "today" },
-    { key: 2, text: "this week", value: "week" },
-    { key: 3, text: "this month", value: "month" },
-    { key: 4, text: "this year", value: "year" }
-  ];
-
-  const getAllTime = async (sorter: string) => {
+  const getAllTime = async () => {
     setLoaded(false);
-    await fetch(`/get-timelogged-data/${sort}`)
+    await fetch(`/get-timelogged-data/`)
       .then(res => res.json())
       .then(data => setTimeLogData(data));
     setLoaded(true);
   };
 
   useEffect(() => {
-    if (!loaded) getAllTime(sort);
-  }, [loaded, sort]);
+    if (!loaded) getAllTime();
+  }, [loaded]);
 
   console.log("timeLogData ==> ", timeLogData);
 
   return (
     <div className="companylists">
-      <Dropdown
-        placeholder="Sort by ..."
-        selection
-        options={dateOptions}
-        onChange={(e: any, { value }) => setSort(value)}
-      />
+      <h3>Summary of logged time:</h3>
+      <Menu pagination>
+        <Menu.Item as="a" icon>
+          <Icon name="chevron left" />
+        </Menu.Item>
+        <Menu.Item as="a">1</Menu.Item>
+        <Menu.Item as="a" icon>
+          <Icon name="chevron right" />
+        </Menu.Item>
+      </Menu>
 
       <Segment>
-        Tickets sorted by: {sort}
         <Table celled>
           <Table.Header>
             <Table.Row>
@@ -57,7 +60,6 @@ export const Summary: React.FC = () => {
               <Table.HeaderCell>Ticket</Table.HeaderCell>
               <Table.HeaderCell>Ticket Time</Table.HeaderCell>
               <Table.HeaderCell>Ticket State</Table.HeaderCell>
-              <Table.HeaderCell>Ticket ID</Table.HeaderCell>
             </Table.Row>
           </Table.Header>
           {timeLogData.map((ticket: TimeLog) => {
@@ -69,7 +71,6 @@ export const Summary: React.FC = () => {
                   <Table.Cell>{ticket.subject_line}</Table.Cell>
                   <Table.Cell>{ticket.ticket_time}</Table.Cell>
                   <Table.Cell>{ticket.ticket_state}</Table.Cell>
-                  <Table.Cell>{ticket.ticket_id}</Table.Cell>
                 </Table.Row>
               </Table.Body>
             );

@@ -157,6 +157,7 @@ app.post("/add-ticket", async (req, res) => {
   await knex("user_tickets").insert({
     user_id: req.session.passport.user.user_id,
     company_id: ticketInfo.company_id,
+    project_id: ticketInfo.project_id,
     subject_line: ticketInfo.subject_line,
     description: ticketInfo.description
   });
@@ -164,18 +165,29 @@ app.post("/add-ticket", async (req, res) => {
 });
 
 // <============= Getting Ticket Info Form Database =============>
-app.get("/users-company-tickets/:companyID", async (req, res) => {
+app.get("/users-project-tickets/:projectID", async (req, res) => {
   const usersCompTickets = await knex("user_tickets")
     .select("*")
     .where({
       user_id: req.session.passport.user.user_id,
-      company_id: req.params.companyID
+      project_id: req.params.projectID
     })
     .returning()
     .then(res => res);
-  console.log("all user tickets for company ==> ", usersCompTickets);
+  console.log("all user tickets for project ==> ", usersCompTickets);
 
   res.send(usersCompTickets);
+});
+
+app.get("/all-user-tickets", async (req, res) => {
+  const allUserTickets = await knex("user_tickets")
+    .select("*")
+    .where({ user_id: req.session.passport.user.user_id })
+    .returning("*")
+    .then(res => res);
+  console.log("allUserTickets ==> ", allUserTickets);
+
+  res.send(allUserTickets);
 });
 
 app.get("/selected-ticket/:ticketID", async (req, res) => {
@@ -387,9 +399,7 @@ app.delete("/remove-ticket/:ticket_id", async (req, res) => {
 });
 
 // <============= Get all data from times =============>
-app.get("/get-timelogged-data/:sort", async (req, res) => {
-  const sorter = req.params.sort;
-  console.log("sorter ===> ", sorter);
+app.get("/get-timelogged-data/", async (req, res) => {
   const userTimeLogData = await knex("user_tickets")
     .select(
       "company_id",
@@ -406,6 +416,88 @@ app.get("/get-timelogged-data/:sort", async (req, res) => {
   console.log("userTimeLogData ==> ", userTimeLogData);
 
   res.send(userTimeLogData);
+});
+
+// <============= Create a Project =============>
+app.post("/add-project", async (req, res) => {
+  const projectInfo = req.body;
+  console.log("projectInfo ==> ", projectInfo);
+
+  await knex("projects").insert({
+    user_id: req.session.passport.user.user_id,
+    company_id: projectInfo.company_id,
+    project_name: projectInfo.project_name
+  });
+
+  res.send("Created Project successfully ...").end();
+});
+
+// <============= Get all Projects =============>
+app.get("/get-user-projects/:companyID", async (req, res) => {
+  const userCompProjects = await knex("projects")
+    .select("*")
+    .where({
+      user_id: req.session.passport.user.user_id,
+      company_id: req.params.companyID
+    })
+    .returning("*")
+    .then(res => res);
+
+  console.log("userCompProjects ==> ", userCompProjects);
+
+  res.send(userCompProjects);
+});
+// <============= Remove Project =============>
+app.get("/all-user-projects", async (req, res) => {
+  const allUserProjects = await knex("projects")
+    .select("*")
+    .where({ user_id: req.session.passport.user.user_id })
+    .returning("*")
+    .then(res => res);
+  console.log("allUserProjects ==> ", allUserProjects);
+
+  res.send(allUserProjects);
+});
+
+// <============= Remove Project =============>
+app.delete("/remove-project/:projectID", async (req, res) => {
+  const projectID = req.params.projectID;
+  console.log("projectID ==> ", projectID);
+
+  await knex("projects")
+    .where({ project_id: projectID })
+    .del();
+
+  res.send("Project removed successfully ...").end();
+});
+
+// <============= Serialization/Deserialization =============>
+app.get("/all-user-data", async (req, res) => {
+  const allUserComps = await knex("companies")
+    .select("*")
+    .where({ user_id: req.session.passport.user.user_id })
+    .returning("*")
+    .then(res => res);
+
+  const allUserTickets = await knex("user_tickets")
+    .select("*")
+    .where({ user_id: req.session.passport.user.user_id })
+    .returning("*")
+    .then(res => res);
+
+  const allUserProj = await knex("projects")
+    .select("*")
+    .where({ user_id: req.session.passport.user.user_id })
+    .returning("*")
+    .then(res => res);
+
+  const allData = {
+    Companies: allUserComps,
+    Tickets: allUserTickets,
+    Projects: allUserProj
+  };
+
+  res.send(allData);
 });
 
 // <============= Serialization/Deserialization =============>

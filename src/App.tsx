@@ -9,8 +9,10 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import "semantic-ui-css/semantic.css";
 import Layout from "./components/Layout";
 import { Tickets } from "./components/Tickets";
-import { CompanyTickets } from "./components/CompanyTickets";
+import { CompanyProjects } from "./components/CompanyProjects";
 import { Ticket } from "./components/Ticket";
+import { Projects } from "./pages/Projects";
+import { ProjectTickets } from "./components/ProjectTickets";
 
 const App: React.FC = () => {
   return (
@@ -21,7 +23,9 @@ const App: React.FC = () => {
           <Layout>
             <Route exact path="/" component={Home} />
             <Route path="/companies" component={Companies} />
-            <Route path="/company-tickets" component={CompanyTickets} />
+            <Route path="/company-projects" component={CompanyProjects} />
+            <Route path="/projects" component={Projects} />
+            <Route path="/project-tickets" component={ProjectTickets} />
             <Route path="/tickets" component={Tickets} />
             <Route path="/ticket" component={Ticket} />
             <Route path="/summary" component={Summary} />

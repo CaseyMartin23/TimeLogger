@@ -29,6 +29,9 @@ export const VerticalSidebar: React.FC<Props> = props => {
         <Menu.Item as="a" href="/companies">
           <h6>Companies</h6>
         </Menu.Item>
+        <Menu.Item as="a" href="/projects">
+          <h6>Projects</h6>
+        </Menu.Item>
         <Menu.Item as="a" href="/tickets">
           <h6>Tickets</h6>
         </Menu.Item>

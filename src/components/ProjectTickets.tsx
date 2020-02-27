@@ -4,9 +4,9 @@ import { useRouteMatch } from "react-router";
 import { TicketForm } from "./TicketForm";
 import { TimerButton } from "./TimerButton";
 
-export const CompanyTickets: FC = () => {
+export const ProjectTickets: FC = () => {
   const [showForm, setShowForm] = useState<boolean>(false);
-  const [userCompTickets, setUserCompTickets] = useState();
+  const [userProjectTickets, setUserProjectTickets] = useState();
   const [loaded, setLoaded] = useState(false);
   const [addedATicket, setAddedATicket] = useState(false);
   const [clicked, setClicked] = useState(false);
@@ -26,20 +26,28 @@ export const CompanyTickets: FC = () => {
     if (!showForm) return setShowForm(true);
     return setShowForm(false);
   };
-  const match = useRouteMatch<{ companyName: string; companyID: string }>(
-    "/company-tickets/:companyName/:companyID?"
-  );
+  const match = useRouteMatch<{
+    projectName: string;
+    projectID: string;
+    companyID: string;
+  }>("/project-tickets/:projectName/:projectID/:companyID?");
+  const projectName = match?.params.projectName;
+  const projectID = match?.params.projectID;
   const companyID = match?.params.companyID;
 
-  const fetchCompanyTickets = async () => {
-    await fetch(`/users-company-tickets/${companyID}`)
+  console.log("projectName ==> ", projectName);
+  console.log("projectID ==> ", projectID);
+  console.log("companyID ==> ", companyID);
+
+  const fetchProjectTickets = async () => {
+    await fetch(`/users-project-tickets/${projectID}`)
       .then(res => res.json())
-      .then(data => setUserCompTickets(data));
+      .then(data => setUserProjectTickets(data));
     setLoaded(true);
   };
 
   useEffect(() => {
-    fetchCompanyTickets();
+    fetchProjectTickets();
   }, [addedATicket, clicked]);
 
   if (!loaded) {
@@ -62,12 +70,12 @@ export const CompanyTickets: FC = () => {
                 padding: "15px"
               }}
             >
-              Tickets for {match?.params.companyName}:
+              Tickets for {match?.params.projectName}:
             </h1>
           </Grid.Row>
           <Grid columns={2}>
-            {(userCompTickets || []).length > 0 ? (
-              (userCompTickets || []).map((ticket: any) => (
+            {(userProjectTickets || []).length > 0 ? (
+              (userProjectTickets || []).map((ticket: any) => (
                 <Grid.Column key={ticket.ticket_id} width={5}>
                   <Card>
                     <Card.Content
@@ -129,7 +137,8 @@ export const CompanyTickets: FC = () => {
             <TicketForm
               setAddedATicket={setAddedATicket}
               setShowForm={setShowForm}
-              companyID={+(match?.params.companyID || 0)}
+              projectID={+(projectID || 0)}
+              companyID={+(companyID || 0)}
             />
           ) : (
             ""

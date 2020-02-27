@@ -3,12 +3,14 @@ import { Form, Label, Input, Button } from "semantic-ui-react";
 
 type Props = {
   companyID: number;
+  projectID: number;
   setShowForm(value: boolean): void;
   setAddedATicket(value: boolean): void;
 };
 
 export const TicketForm: React.FC<Props> = ({
   companyID,
+  projectID,
   setShowForm,
   setAddedATicket
 }) => {
@@ -22,6 +24,7 @@ export const TicketForm: React.FC<Props> = ({
     setLoading(true);
     const ticketInfo = {
       company_id: companyID,
+      project_id: projectID,
       subject_line: ticketSub,
       description: ticketDescript
     };

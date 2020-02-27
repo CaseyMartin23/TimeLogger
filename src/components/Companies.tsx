@@ -73,7 +73,7 @@ export const Companies: React.FC = () => {
                 <Card.Content
                   textAlign="center"
                   header={comp.company_name}
-                  href={`/company-tickets/${comp.company_name}/${comp.company_id}`}
+                  href={`/company-projects/${comp.company_name}/${comp.company_id}`}
                 />
                 <Card.Content textAlign="center">
                   <Button onClick={() => removeCompany(comp.company_id)}>
