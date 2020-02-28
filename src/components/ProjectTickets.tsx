@@ -81,7 +81,10 @@ export const ProjectTickets: FC = () => {
                     <Card.Content
                       meta={`#${ticket.ticket_id} (${ticket.ticket_state})`}
                     />
-                    <Card.Content header={ticket.subject_line} />
+                    <Card.Content
+                      header={ticket.subject_line}
+                      href={`/ticket/${ticket.ticket_id}`}
+                    />
                     <Card.Content description={ticket.description} />
                     <Card.Content
                       description={`${

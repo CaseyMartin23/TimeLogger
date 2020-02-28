@@ -36,7 +36,10 @@ export const Tickets: React.FC = () => {
                 }) => (
                   <Grid.Column width={4} key={ticket.ticket_id}>
                     <Card>
-                      <Card.Content header={ticket.subject_line} href={``} />
+                      <Card.Content
+                        header={ticket.subject_line}
+                        href={`/ticket/${ticket.ticket_id}`}
+                      />
                       <Card.Content
                         content={`ticket state: ${ticket.ticket_state}`}
                       />
