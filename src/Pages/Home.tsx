@@ -33,7 +33,6 @@ export const Home: React.FC = () => {
   return (
     <div>
       <div>This is the home page</div>
-      <Button href="http://localhost:3005/auth/logout">Log out</Button>
     </div>
   );
 };
