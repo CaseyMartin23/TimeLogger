@@ -8,9 +8,13 @@ export const Home: React.FC = () => {
 
   const getUserData = async () => {
     setLoaded(false);
-    await fetch("/whoami")
-      .then(res => res.json())
-      .then(data => setUserData(data));
+    try {
+      await fetch("/whoami")
+        .then(res => res.json())
+        .then(data => setUserData(data));
+    } catch (e) {
+      console.log(e);
+    }
     setLoaded(true);
   };
 
@@ -22,14 +26,14 @@ export const Home: React.FC = () => {
     }
   }, [loaded]);
 
-  if (!userData) return <Redirect to="/login" />;
-
   if (!loaded) return <div>Loading ...</div>;
+
+  if (!userData) return <Redirect to="/login" />;
 
   return (
     <div>
-      This is the home page
-      <Button href="http://localhost/auth/logout">Log out</Button>
+      <div>This is the home page</div>
+      <Button href="http://localhost:3005/auth/logout">Log out</Button>
     </div>
   );
 };
