@@ -1,13 +1,6 @@
 import React, { useState, useEffect } from "react";
-import {
-  Button,
-  Form,
-  Grid,
-  Header,
-  Image,
-  Message,
-  Segment
-} from "semantic-ui-react";
+import { Button, Grid, Header, Segment, Icon } from "semantic-ui-react";
+import { Redirect } from "react-router-dom";
 
 export const Login: React.FC = () => {
   const [userLoggedIn, setUserLoggedIn] = useState(false);
@@ -15,11 +8,13 @@ export const Login: React.FC = () => {
 
   const getLoggedInState = async () => {
     setLoaded(false);
-    await fetch("/whoami")
-      .then(res => res.json())
-      .then(data => {
-        console.log("getLoggedInState data ==> ", data);
-      });
+    try {
+      await fetch("/whoami")
+        .then(res => res.json())
+        .then(data => setUserLoggedIn(data));
+    } catch (e) {
+      console.log(e);
+    }
     setLoaded(true);
   };
 
@@ -29,41 +24,29 @@ export const Login: React.FC = () => {
     }
   }, [loaded]);
 
+  if (!loaded) return <div>Loading ...</div>;
+
+  if (userLoggedIn && loaded) return <Redirect to="/" />;
+
   return (
     <Grid textAlign="center" style={{ height: "100vh" }} verticalAlign="middle">
       <Grid.Column style={{ maxWidth: 450 }}>
-        <Header as="h2" color="teal" textAlign="center">
-          <Image src="/logo.png" /> Log-in to your account
-        </Header>
-        <Form size="large">
-          <Segment stacked>
-            <Form.Input
-              fluid
-              icon="user"
-              iconPosition="left"
-              placeholder="E-mail address"
-            />
-            <Form.Input
-              fluid
-              icon="lock"
-              iconPosition="left"
-              placeholder="Password"
-              type="password"
-            />
-
-            <Button
-              color="teal"
-              fluid
-              size="large"
-              href="http://localhost:3005/auth/linkedin/redirect"
-            >
-              Login
-            </Button>
-          </Segment>
-        </Form>
-        <Message>
-          New to us? <a href="#">Sign Up</a>
-        </Message>
+        <Segment stacked>
+          <Header as="h2" color="blue" textAlign="center">
+            <div>
+              Log-in with Linked
+              <Icon loading name="linkedin" />
+            </div>
+          </Header>
+          <Button
+            color="blue"
+            fluid
+            size="large"
+            href="http://localhost:3005/auth/linkedin/redirect"
+          >
+            Login
+          </Button>
+        </Segment>
       </Grid.Column>
     </Grid>
   );

@@ -120,7 +120,8 @@ app.get(
 
 app.get("/whoami", (req, res, next) => {
   try {
-    res.send(req.user);
+    if (req.user) return res.send(req.user);
+    if (!req.user) return res.send("No user found!");
   } catch (e) {
     return next(e);
   }

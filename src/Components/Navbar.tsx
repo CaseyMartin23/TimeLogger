@@ -16,7 +16,9 @@ export const Navbar: React.FC = () => {
         <Menu.Menu position="right">
           <Menu.Item icon="user circle" name="Profile" />
           <Menu.Item>
-            <Button primary>Logout</Button>
+            <Button primary href="http://localhost:3005/auth/logout">
+              Logout
+            </Button>
           </Menu.Item>
         </Menu.Menu>
       </Menu>
