@@ -8,7 +8,7 @@ export const Home: React.FC = () => {
 
   const getUserData = async () => {
     setLoaded(false);
-    await fetch("http://localhost:3005/whoami")
+    await fetch("/whoami")
       .then(res => res.json())
       .then(data => setUserData(data));
     setLoaded(true);
@@ -29,7 +29,7 @@ export const Home: React.FC = () => {
   return (
     <div>
       This is the home page
-      <Button href="http://localhost:3005/auth/logout">Log out</Button>
+      <Button href="http://localhost/auth/logout">Log out</Button>
     </div>
   );
 };

@@ -76,14 +76,23 @@ passport.use(
 );
 
 // <============= Routes =============>
-app.get("/", (req, res) => {
-  res.send("I'm up and running ...");
+app.get("/", (req, res, next) => {
+  try {
+    res.send("I'm up and running ...");
+  } catch (e) {
+    console.log(e);
+    return next(e);
+  }
 });
 
-app.get("/auth/logout", (req, res) => {
-  req.logOut();
-  req.session = null;
-  res.redirect("http://localhost:3000/login");
+app.get("/auth/logout", (req, res, next) => {
+  try {
+    req.logOut();
+    req.session = null;
+    res.redirect("http://localhost:3000/login");
+  } catch (e) {
+    next(e);
+  }
 });
 
 app.get(
@@ -109,26 +118,34 @@ app.get(
   }
 );
 
-app.get("/whoami", (req, res) => {
-  res.send(req.session.passport.user);
+app.get("/whoami", (req, res, next) => {
+  try {
+    res.send(req.user);
+  } catch (e) {
+    return next(e);
+  }
 });
 
 // <============= Update User Role =============>
-app.put("/update-user-role/:role", (req, res) => {
-  const paramRole = req.params.role;
-  console.log("update-user-param->", paramRole);
+app.put("/update-user-role/:role", (req, res, next) => {
+  try {
+    const paramRole = req.params.role;
+    console.log("update-user-param->", paramRole);
 
-  knex("users")
-    .update({ UserRole: paramRole })
-    .where({ LinkedinId: req.session.passport.user.LinkedinId })
-    .returning()
-    .then(() => {
-      req.session.passport.user = {
-        ...req.session.passport.user,
-        UserRole: paramRole
-      };
-      res.send(req.session.passport.user);
-    });
+    knex("users")
+      .update({ UserRole: paramRole })
+      .where({ LinkedinId: req.session.passport.user.LinkedinId })
+      .returning()
+      .then(() => {
+        req.session.passport.user = {
+          ...req.session.passport.user,
+          UserRole: paramRole
+        };
+        res.send(req.session.passport.user);
+      });
+  } catch (e) {
+    next(e);
+  }
 });
 
 // <============= Serialization/Deserialization =============>
@@ -146,6 +163,10 @@ passport.deserializeUser((user, done) => {
 //   next();
 // });
 
+app.use((err, req, res, next) => {
+  console.log(err);
+  return res.json({ message: "Broken" });
+});
 // <============= Server's Port =============>
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
