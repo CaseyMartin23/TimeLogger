@@ -7,7 +7,7 @@ export const Navbar: React.FC = () => {
     <div>
       <Menu>
         <Menu.Item header name="TimeLogger" />
-        <Dropdown item icon="bars" simple>
+        <Dropdown item icon="wrench" simple>
           <Dropdown.Menu>
             <Dropdown.Item>User settings</Dropdown.Item>
             <Dropdown.Item>Edit Permissions</Dropdown.Item>
