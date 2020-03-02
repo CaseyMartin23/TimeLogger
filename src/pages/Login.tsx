@@ -25,15 +25,9 @@ export const Login: React.FC = () => {
     setLoading(false);
   };
 
-  // console.log("loading before ===>", loading);
-  // console.log("loaded before ==> ", loaded);
-
   useEffect(() => {
     if (!isLoggedIn) isUserLoggedIn();
   }, [isLoggedIn]);
-
-  // console.log("loading right after ===>", loading);
-  // console.log("loaded right after  ==> ", loaded);
 
   if (loading) {
     return <div>Loading ...</div>;
