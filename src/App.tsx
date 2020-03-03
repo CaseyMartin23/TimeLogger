@@ -4,7 +4,7 @@ import "semantic-ui-css/semantic.css";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { Home } from "./Pages/Home";
 import { Login } from "./Pages/Login";
-import { Layout } from "./Components/Layout";
+import { Layout } from "./components/Layout";
 
 const App: React.FC = () => {
   return (

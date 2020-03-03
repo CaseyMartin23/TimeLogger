@@ -1,12 +1,31 @@
 #content {
-  max-width: 100em;
+  /* width: 80em; */
   margin-left: auto;
   margin-right: auto;
   padding-top: 2em;
+  width: 90%;
 }
 .searchbar {
   text-align: center;
 }
 .filterIcon {
   float: right;
+}
+.sidebar {
+  padding-right: 5px;
+}
+.modal {
+  padding: 1em;
+  height: fit-content;
+  position: relative;
+  top: auto;
+  transform: translateX(100%);
+}
+.table {
+  width: max-content;
+}
+.side {
+  width: 11.7em;
+  background-color: whitesmoke;
+  min-height: 50em;
 }

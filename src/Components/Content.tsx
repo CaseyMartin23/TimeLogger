@@ -1,15 +1,22 @@
 import React from "react";
-import { Table, Button, Search, Icon } from "semantic-ui-react";
+import { Table, Button, Input, Segment, Icon } from "semantic-ui-react";
 import "../assets/stylesheet.css";
 
 export const Content = () => {
   return (
     <div id="content">
       <div className="searchbar">
-        <Search />
+        <Segment basic textAlign="center">
+          <Input
+            action={{ color: "blue", content: "Search" }}
+            icon="search"
+            iconPosition="left"
+            placeholder="Search company"
+          />
+        </Segment>
       </div>
-      <Table celled selectable>
-        <Table.Header>
+      <Table sortable className="table" celled selectable>
+        <Table.Header fullWidth>
           <Table.Row>
             <Table.HeaderCell>
               Company
@@ -25,7 +32,7 @@ export const Content = () => {
             <Table.Cell>Vulcan Labs</Table.Cell>
             <Table.Cell textAlign="right">42h 32min</Table.Cell>
             <Table.Cell textAlign="right">
-              <Button icon="eraser" color="green" />
+              <Button icon="edit" color="green" />
               <Button icon="trash alternate" color="red" />
             </Table.Cell>
           </Table.Row>
@@ -33,7 +40,7 @@ export const Content = () => {
             <Table.Cell>Paracon</Table.Cell>
             <Table.Cell textAlign="right">21h 17min</Table.Cell>
             <Table.Cell textAlign="right">
-              <Button icon="eraser" color="green" />
+              <Button icon="edit" color="green" />
               <Button icon="trash alternate" color="red" />
             </Table.Cell>
           </Table.Row>
@@ -41,7 +48,7 @@ export const Content = () => {
             <Table.Cell>Hetzner</Table.Cell>
             <Table.Cell textAlign="right">173h 07min</Table.Cell>
             <Table.Cell textAlign="right">
-              <Button icon="eraser" color="green" />
+              <Button icon="edit" color="green" />
               <Button icon="trash alternate" color="red" />
             </Table.Cell>
           </Table.Row>
